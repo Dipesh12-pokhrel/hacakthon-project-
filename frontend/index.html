@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MediStay Nepal AI - Complete Healthcare Platform</title>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDembtAqRWabiS6LkqP_q0xG7MdZ7uPx9A"></script>
+    <!-- Leaflet Map Library (Open Source - No API Key Needed) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -924,6 +926,7 @@
                         <button class="map-filter active" onclick="filterHospitals(event, 'all')">All Hospitals</button>
                         <button class="map-filter" onclick="filterHospitals(event, 'emergency')">Emergency Only</button>
                         <button class="map-filter" onclick="filterHospitals(event, 'toprated')">Top Rated</button>
+                        <button class="map-filter" style="background: var(--success); color: white; border-color: var(--success);" onclick="seedSampleHospitals()">📥 Load Sample Hospitals</button>
                     </div>
                     <div id="map" style="display:none;"></div>
                     <div id="mapLoading" style="text-align: center; padding: 2rem;">
@@ -1369,6 +1372,85 @@
             }
         }
 
+        function seedSampleHospitals() {
+            // Hardcoded sample hospitals for demonstration
+            hospitals = [
+                {
+                    _id: '1',
+                    name: 'Kathmandu Medical Center',
+                    location: 'Thapathali',
+                    city: 'Kathmandu',
+                    address: 'Thapathali Road',
+                    latitude: 27.7172,
+                    longitude: 85.3240,
+                    bedsAvailable: 45,
+                    totalBeds: 50,
+                    rating: 4.8,
+                    emergencyServices: true,
+                    phone: '+977-1-4123456'
+                },
+                {
+                    _id: '2',
+                    name: 'Nepal Police Hospital',
+                    location: 'Kathmandu',
+                    city: 'Kathmandu',
+                    address: 'Naxal',
+                    latitude: 27.7200,
+                    longitude: 85.3150,
+                    bedsAvailable: 30,
+                    totalBeds: 35,
+                    rating: 4.5,
+                    emergencyServices: true,
+                    phone: '+977-1-4234567'
+                },
+                {
+                    _id: '3',
+                    name: 'Tribhuvan University Teaching Hospital',
+                    location: 'Maharajgunj',
+                    city: 'Kathmandu',
+                    address: 'Maharajgunj',
+                    latitude: 27.7100,
+                    longitude: 85.3300,
+                    bedsAvailable: 50,
+                    totalBeds: 60,
+                    rating: 4.6,
+                    emergencyServices: true,
+                    phone: '+977-1-4345678'
+                },
+                {
+                    _id: '4',
+                    name: 'Apollo Specialty Hospital',
+                    location: 'Kathmandu',
+                    city: 'Kathmandu',
+                    address: 'Lazimpat',
+                    latitude: 27.7250,
+                    longitude: 85.3200,
+                    bedsAvailable: 35,
+                    totalBeds: 40,
+                    rating: 4.7,
+                    emergencyServices: true,
+                    phone: '+977-1-4456789'
+                },
+                {
+                    _id: '5',
+                    name: 'Patan Academy of Health Sciences',
+                    location: 'Patan',
+                    city: 'Kathmandu',
+                    address: 'Lagankhel',
+                    latitude: 27.6825,
+                    longitude: 85.3180,
+                    bedsAvailable: 40,
+                    totalBeds: 50,
+                    rating: 4.4,
+                    emergencyServices: true,
+                    phone: '+977-1-4567890'
+                }
+            ];
+            displayHospitals();
+            populateHospitalSelect();
+            alert('✅ Sample hospitals loaded! Showing 5 hospitals on map.');
+        }
+
         function displayHospitals() {
             const tbody = document.getElementById('hospitalList');
             const mapLoading = document.getElementById('mapLoading');
@@ -1417,19 +1499,39 @@
             if (!mapElement || map) return;
 
             mapElement.style.display = 'block';
-            const kathmandu = { lat: 27.7172, lng: 85.3240 };
-            map = new google.maps.Map(mapElement, {
-                zoom: 13,
-                center: kathmandu,
-            });
+            const kathmandu = [27.7172, 85.3240];
+            
+            // Create Leaflet map
+            map = L.map('map').setView(kathmandu, 13);
+            
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19
+            }).addTo(map);
 
+            // Add hospital markers
             hospitals.forEach(hospital => {
-                new google.maps.Marker({
-                    position: { lat: hospital.latitude || 27.7172, lng: hospital.longitude || 85.3240 },
-                    map: map,
-                    title: hospital.name,
-                    icon: 'https://maps.google.com/mapfiles/ms/icons/hospital.png'
-                });
+                const lat = hospital.latitude || 27.7172;
+                const lng = hospital.longitude || 85.3240;
+                const popupText = `
+                    <div style="text-align: center; font-size: 14px;">
+                        <strong style="color: var(--primary);">${hospital.name}</strong><br>
+                        📍 ${hospital.location}<br>
+                        ⭐ Rating: ${hospital.rating || 'N/A'}<br>
+                        🛏️ Beds: ${hospital.bedsAvailable || 0}/${hospital.totalBeds || 0}
+                    </div>
+                `;
+                L.circleMarker([lat, lng], {
+                    radius: 10,
+                    fillColor: '#00a8cc',
+                    color: '#003d5c',
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                })
+                .bindPopup(popupText)
+                .addTo(map);
             });
         }
 
