@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:5.0
+    container_name: medistay-mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: medistay123
+      MONGO_INITDB_DATABASE: medistay
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - medistay-network
+
+  # Backend API Server
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: medistay-backend
+    restart: always
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      MONGODB_URI: mongodb://admin:medistay123@mongodb:27017/medistay?authSource=admin
+      JWT_SECRET: ${JWT_SECRET:-change-this-to-strong-random-value}
+      CORS_ORIGIN: http://localhost:3000
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+    networks:
+      - medistay-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/auth/me"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend Web Server (Nginx)
+  frontend:
+    image: nginx:alpine
+    container_name: medistay-frontend
+    restart: always
+    ports:
+      - "3000:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - backend
+    networks:
+      - medistay-network
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  medistay-network:
+    driver: bridge

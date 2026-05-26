@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediStay Nepal AI - User Dashboard</title>
+    <link rel="stylesheet" href="css/admin-dashboard.css">
+    <style>
+        .dashboard-hero {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .hero-content h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .sos-button {
+            background: var(--danger-color);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+            box-shadow: 0 10px 40px rgba(255, 0, 110, 0.3);
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 10px 40px rgba(255, 0, 110, 0.3); }
+            50% { box-shadow: 0 10px 60px rgba(255, 0, 110, 0.6); }
+        }
+
+        .sos-button:hover {
+            transform: scale(1.05);
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .quick-action {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quick-action:hover {
+            transform: translateY(-5px);
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .quick-action-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .quick-action-text {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .list-empty {
+            text-align: center;
+            padding: 2rem;
+            opacity: 0.7;
+        }
+
+        .search-box {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode .search-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+        }
+
+        .search-box input {
+            border: 2px solid var(--primary-color);
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            outline: none;
+            background: transparent;
+            color: inherit;
+        }
+
+        .result-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        body.dark-mode .result-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+        }
+
+        .result-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 168, 204, 0.2);
+        }
+
+        .result-info h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .result-info p {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin: 0.3rem 0;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="layout">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-brand">🏥 MediStay</div>
+            <ul class="sidebar-menu">
+                <li><a onclick="showSection('dashboard')" class="active">📊 Dashboard</a></li>
+                <li><a onclick="showSection('appointments')">📅 My Appointments</a></li>
+                <li><a onclick="showSection('bookings')">🏨 My Bookings</a></li>
+                <li><a onclick="showSection('emergencies')">🚨 My Emergencies</a></li>
+                <li><a onclick="showSection('profile')">👤 Profile</a></li>
+                <li><a onclick="logout()">🚪 Logout</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <div class="header-title">Patient Dashboard</div>
+                <div class="header-actions">
+                    <button class="header-btn" onclick="toggleTheme()">🌙 Theme</button>
+                    <button class="header-btn" onclick="logout()">Logout</button>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="content">
+                <!-- Dashboard Section -->
+                <div id="dashboard-section" class="section-content">
+                    <div class="dashboard-hero">
+                        <div class="hero-content">
+                            <h2>Welcome Back, <span id="userName">Patient</span>! 👋</h2>
+                            <p>Your health is our priority. Access healthcare services easily.</p>
+                            <div class="hero-buttons">
+                                <button class="btn btn-primary" onclick="openModal('appointmentModal')">📅 Book Appointment</button>
+                                <button class="btn btn-secondary" onclick="openModal('bookingModal')">🏨 Book Stay</button>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="sos-button" onclick="openModal('emergencyModal')">🚨 EMERGENCY SOS</button>
+                        </div>
+                    </div>
+
+                    <div class="quick-actions">
+                        <div class="quick-action" onclick="showSection('appointments')">
+                            <div class="quick-action-icon">📅</div>
+                            <div class="quick-action-text">Appointments</div>
+                        </div>
+                        <div class="quick-action" onclick="showSection('bookings')">
+                            <div class="quick-action-icon">🏨</div>
+                            <div class="quick-action-text">Bookings</div>
+                        </div>
+                        <div class="quick-action" onclick="openModal('appointmentModal')">
+                            <div class="quick-action-icon">📍</div>
+                            <div class="quick-action-text">Find Hospital</div>
+                        </div>
+                        <div class="quick-action" onclick="showSection('emergencies')">
+                            <div class="quick-action-icon">🚑</div>
+                            <div class="quick-action-text">Emergencies</div>
+                        </div>
+                    </div>
+
+                    <div class="grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="appointmentCount">0</div>
+                            <div class="stat-label">Appointments</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="bookingCount">0</div>
+                            <div class="stat-label">Bookings</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="emergencyCount">0</div>
+                            <div class="stat-label">Emergencies</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Appointments Section -->
+                <div id="appointments-section" class="section-content hidden">
+                    <div class="card">
+                        <div class="card-title">📅 My Appointments</div>
+                        <button class="btn btn-primary mb-2" onclick="openModal('appointmentModal')">+ New Appointment</button>
+                        <div id="appointmentsList"></div>
+                    </div>
+                </div>
+
+                <!-- Bookings Section -->
+                <div id="bookings-section" class="section-content hidden">
+                    <div class="card">
+                        <div class="card-title">🏨 My Room Bookings</div>
+                        <button class="btn btn-primary mb-2" onclick="openModal('bookingModal')">+ New Booking</button>
+                        <div id="bookingsList"></div>
+                    </div>
+                </div>
+
+                <!-- Emergencies Section -->
+                <div id="emergencies-section" class="section-content hidden">
+                    <div class="card">
+                        <div class="card-title">🚨 My Emergency Requests</div>
+                        <button class="btn btn-primary mb-2" onclick="openModal('emergencyModal')">+ New Emergency</button>
+                        <div id="emergenciesList"></div>
+                    </div>
+                </div>
+
+                <!-- Profile Section -->
+                <div id="profile-section" class="section-content hidden">
+                    <div class="card">
+                        <div class="card-title">👤 My Profile</div>
+                        <form onsubmit="updateProfile(event)">
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" id="profileName" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="profileEmail" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <input type="tel" id="profilePhone">
+                            </div>
+                            <div class="form-group">
+                                <label>Address</label>
+                                <textarea id="profileAddress"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="appointmentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📅 Book Appointment</h2>
+                <button class="modal-close" onclick="closeModal('appointmentModal')">×</button>
+            </div>
+            <form onsubmit="bookAppointment(event)">
+                <div class="form-group">
+                    <label>Hospital *</label>
+                    <select id="appointmentHospital" required onchange="loadDoctors()">
+                        <option value="">Select hospital...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Doctor *</label>
+                    <select id="appointmentDoctor" required>
+                        <option value="">Select doctor...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Date *</label>
+                    <input type="date" id="appointmentDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Time *</label>
+                    <input type="time" id="appointmentTime" required>
+                </div>
+                <div class="form-group">
+                    <label>Reason for Visit *</label>
+                    <textarea id="appointmentReason" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Book Appointment</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="bookingModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🏨 Book Room</h2>
+                <button class="modal-close" onclick="closeModal('bookingModal')">×</button>
+            </div>
+            <form onsubmit="bookRoom(event)">
+                <div class="form-group">
+                    <label>Hotel *</label>
+                    <select id="bookingHotel" required>
+                        <option value="">Select hotel...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Room Type *</label>
+                    <select id="roomType" required>
+                        <option value="">Select room...</option>
+                        <option value="Standard">Standard Room - Rs. 1500/night</option>
+                        <option value="Deluxe">Deluxe Room - Rs. 2500/night</option>
+                        <option value="Suite">Suite - Rs. 3500/night</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Check-in Date *</label>
+                    <input type="date" id="checkInDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Check-out Date *</label>
+                    <input type="date" id="checkOutDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Guests *</label>
+                    <select id="numGuests" required>
+                        <option value="1">1 Guest</option>
+                        <option value="2">2 Guests</option>
+                        <option value="3">3 Guests</option>
+                        <option value="4">4+ Guests</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Book Room</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="emergencyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🚨 Emergency Alert</h2>
+                <button class="modal-close" onclick="closeModal('emergencyModal')">×</button>
+            </div>
+            <form onsubmit="reportEmergency(event)">
+                <div style="background: rgba(255, 0, 110, 0.2); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; color: var(--danger-color); font-weight: 600;">
+                    ⚠️ This will immediately alert emergency services
+                </div>
+                <div class="form-group">
+                    <label>Emergency Type *</label>
+                    <select id="emergencyType" required>
+                        <option value="">Select type...</option>
+                        <option value="accident">Accident / Injury</option>
+                        <option value="medical">Medical Emergency</option>
+                        <option value="ambulance">Need Ambulance</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Location *</label>
+                    <input type="text" id="emergencyLocation" placeholder="Your current location" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone Number *</label>
+                    <input type="tel" id="emergencyPhone" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="emergencyDescription" placeholder="Brief description of the emergency"></textarea>
+                </div>
+                <button type="submit" class="btn btn-danger" style="width: 100%; padding: 1rem;">🚨 ALERT EMERGENCY SERVICES</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/api-client.js"></script>
+    <script src="js/dashboard-utils.js"></script>
+    <script>
+        let currentUser = null;
+        let hospitals = [];
+        let hotels = [];
+        let doctors = [];
+
+        // Initialize
+        async function init() {
+            await loadCurrentUser();
+            await loadHospitals();
+            await loadHotels();
+            loadAppointments();
+            loadBookings();
+            loadEmergencies();
+            setMinDate();
+        }
+
+        async function loadCurrentUser() {
+            const response = await api.getCurrentUser();
+            if (response.success) {
+                currentUser = response.user;
+                document.getElementById('userName').textContent = currentUser.name;
+                document.getElementById('profileName').value = currentUser.name;
+                document.getElementById('profileEmail').value = currentUser.email;
+                document.getElementById('profilePhone').value = currentUser.phone || '';
+                document.getElementById('profileAddress').value = currentUser.address || '';
+            } else {
+                window.location.href = '/frontend/index.html';
+            }
+        }
+
+        async function loadHospitals() {
+            const response = await api.getAllHospitals();
+            if (response.success) {
+                hospitals = response.data || [];
+                const select = document.getElementById('appointmentHospital');
+                select.innerHTML = '<option value="">Select hospital...</option>';
+                hospitals.forEach(h => {
+                    select.innerHTML += `<option value="${h._id}">${h.name} - ${h.city}</option>`;
+                });
+            }
+        }
+
+        async function loadHotels() {
+            const response = await api.getAllHotels();
+            if (response.success) {
+                hotels = response.data || [];
+                const select = document.getElementById('bookingHotel');
+                select.innerHTML = '<option value="">Select hotel...</option>';
+                hotels.forEach(h => {
+                    select.innerHTML += `<option value="${h._id}">${h.name} - ${h.city}</option>`;
+                });
+            }
+        }
+
+        function loadDoctors() {
+            const hospitalId = document.getElementById('appointmentHospital').value;
+            const hospital = hospitals.find(h => h._id === hospitalId);
+            const select = document.getElementById('appointmentDoctor');
+            
+            if (hospital && hospital.doctors) {
+                select.innerHTML = '<option value="">Select doctor...</option>';
+                hospital.doctors.forEach(d => {
+                    select.innerHTML += `<option value="${d.name}">${d.name} - ${d.specialty}</option>`;
+                });
+            }
+        }
+
+        async function bookAppointment(event) {
+            event.preventDefault();
+            showLoader(true);
+
+            const data = {
+                hospitalId: document.getElementById('appointmentHospital').value,
+                doctorName: document.getElementById('appointmentDoctor').value,
+                specialty: 'General',
+                appointmentDate: document.getElementById('appointmentDate').value,
+                timeSlot: document.getElementById('appointmentTime').value,
+                reason: document.getElementById('appointmentReason').value,
+            };
+
+            const response = await api.createAppointment(data);
+            showLoader(false);
+
+            if (response.success) {
+                showAlert('Appointment booked successfully! ✅', 'success');
+                closeModal('appointmentModal');
+                event.target.reset();
+                loadAppointments();
+            } else {
+                showAlert(response.message || 'Error booking appointment', 'danger');
+            }
+        }
+
+        async function bookRoom(event) {
+            event.preventDefault();
+            showLoader(true);
+
+            const checkIn = new Date(document.getElementById('checkInDate').value);
+            const checkOut = new Date(document.getElementById('checkOutDate').value);
+            const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+            const roomPrices = { 'Standard': 1500, 'Deluxe': 2500, 'Suite': 3500 };
+            const roomType = document.getElementById('roomType').value;
+            const totalPrice = nights * roomPrices[roomType];
+
+            const data = {
+                hotelId: document.getElementById('bookingHotel').value,
+                roomType,
+                checkInDate: document.getElementById('checkInDate').value,
+                checkOutDate: document.getElementById('checkOutDate').value,
+                numberOfGuests: document.getElementById('numGuests').value,
+                totalPrice,
+            };
+
+            const response = await api.createBooking(data);
+            showLoader(false);
+
+            if (response.success) {
+                showAlert(`Room booked for ${nights} nights! Total: Rs. ${totalPrice}`, 'success');
+                closeModal('bookingModal');
+                event.target.reset();
+                loadBookings();
+            } else {
+                showAlert(response.message || 'Error booking room', 'danger');
+            }
+        }
+
+        async function reportEmergency(event) {
+            event.preventDefault();
+            showLoader(true);
+
+            const data = {
+                emergencyType: document.getElementById('emergencyType').value,
+                location: document.getElementById('emergencyLocation').value,
+                description: document.getElementById('emergencyDescription').value,
+                contactPhone: document.getElementById('emergencyPhone').value,
+            };
+
+            const response = await api.createEmergency(data);
+            showLoader(false);
+
+            if (response.success) {
+                showAlert('🚨 Emergency alert sent! Ambulance will arrive shortly.', 'success');
+                closeModal('emergencyModal');
+                event.target.reset();
+                loadEmergencies();
+            } else {
+                showAlert(response.message || 'Error reporting emergency', 'danger');
+            }
+        }
+
+        async function loadAppointments() {
+            const response = await api.getUserAppointments();
+            const list = document.getElementById('appointmentsList');
+
+            if (response.success && response.data && response.data.length > 0) {
+                list.innerHTML = response.data.map(a => `
+                    <div class="result-item">
+                        <div class="result-info">
+                            <h3>${escapeHtml(a.doctorName)}</h3>
+                            <p>📍 ${escapeHtml(a.hospitalId?.name || 'Hospital')}</p>
+                            <p>📅 ${formatDate(a.appointmentDate)} at ${a.timeSlot}</p>
+                            <p>📝 ${escapeHtml(a.reason)}</p>
+                        </div>
+                        <div class="result-actions">
+                            <span class="status-badge status-${a.status}">${a.status}</span>
+                        </div>
+                    </div>
+                `).join('');
+                document.getElementById('appointmentCount').textContent = response.data.length;
+            } else {
+                list.innerHTML = '<div class="list-empty">No appointments yet. Book one now! 📅</div>';
+            }
+        }
+
+        async function loadBookings() {
+            const response = await api.getUserBookings();
+            const list = document.getElementById('bookingsList');
+
+            if (response.success && response.data && response.data.length > 0) {
+                list.innerHTML = response.data.map(b => `
+                    <div class="result-item">
+                        <div class="result-info">
+                            <h3>${escapeHtml(b.hotelId?.name || 'Hotel')}</h3>
+                            <p>🏨 ${escapeHtml(b.roomType)}</p>
+                            <p>📅 ${formatDate(b.checkInDate)} to ${formatDate(b.checkOutDate)}</p>
+                            <p>💰 Total: Rs. ${b.totalPrice}</p>
+                        </div>
+                        <div class="result-actions">
+                            <span class="status-badge status-${b.status}">${b.status}</span>
+                        </div>
+                    </div>
+                `).join('');
+                document.getElementById('bookingCount').textContent = response.data.length;
+            } else {
+                list.innerHTML = '<div class="list-empty">No bookings yet. Reserve a room! 🏨</div>';
+            }
+        }
+
+        async function loadEmergencies() {
+            const response = await api.getUserEmergencies();
+            const list = document.getElementById('emergenciesList');
+
+            if (response.success && response.data && response.data.length > 0) {
+                list.innerHTML = response.data.map(e => `
+                    <div class="result-item">
+                        <div class="result-info">
+                            <h3>${escapeHtml(e.emergencyType)}</h3>
+                            <p>📍 ${escapeHtml(e.location)}</p>
+                            <p>🚑 Assigned: ${e.assignedAmbulance || 'Pending'}</p>
+                            <p>⏱️ ETA: ${e.ambulanceETA || 'Calculating'} minutes</p>
+                        </div>
+                        <div class="result-actions">
+                            <span class="status-badge status-${e.status}">${e.status}</span>
+                        </div>
+                    </div>
+                `).join('');
+                document.getElementById('emergencyCount').textContent = response.data.length;
+            } else {
+                list.innerHTML = '<div class="list-empty">No emergencies. Stay safe! 🚨</div>';
+            }
+        }
+
+        function showSection(sectionName) {
+            document.querySelectorAll('.section-content').forEach(s => s.classList.add('hidden'));
+            document.getElementById(`${sectionName}-section`).classList.remove('hidden');
+
+            document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function updateProfile(event) {
+            event.preventDefault();
+            showAlert('Profile updated successfully! ✅', 'success');
+        }
+
+        function setMinDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('appointmentDate').min = today;
+            document.getElementById('checkInDate').min = today;
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+        }
+
+        function logout() {
+            api.clearToken();
+            window.location.href = '/frontend/index.html';
+        }
+
+        // Load theme preference
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>

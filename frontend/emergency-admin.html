@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediStay Nepal AI - Emergency Admin</title>
+    <link rel="stylesheet" href="css/admin-dashboard.css">
+    <style>
+        .emergency-card {
+            border-left: 4px solid var(--danger-color);
+            animation: alertPulse 2s infinite;
+        }
+
+        @keyframes alertPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .priority-critical { color: var(--danger-color); font-weight: 800; }
+        .priority-high { color: var(--warning-color); font-weight: 700; }
+        .priority-medium { color: var(--accent-color); }
+        .priority-low { color: var(--success-color); }
+
+        .ambulance-tracker {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .ambulance-status {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .tracker-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .tracker-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .location-map {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, rgba(0, 168, 204, 0.1), rgba(0, 212, 255, 0.1));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            margin: 1.5rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="layout">
+        <div class="sidebar">
+            <div class="sidebar-brand">🚑 Emergency</div>
+            <ul class="sidebar-menu">
+                <li><a onclick="showSection('dashboard')" class="active">📊 Dashboard</a></li>
+                <li><a onclick="showSection('active')">🚨 Active Calls</a></li>
+                <li><a onclick="showSection('ambulances')">🚑 Ambulances</a></li>
+                <li><a onclick="showSection('completed')">✅ Completed</a></li>
+                <li><a onclick="showSection('settings')">⚙️ Settings</a></li>
+                <li><a onclick="logout()">🚪 Logout</a></li>
+            </ul>
+        </div>
+
+        <div class="main-content">
+            <div class="header">
+                <div class="header-title">🚨 Emergency Response Admin</div>
+                <div class="header-actions">
+                    <button class="header-btn" onclick="toggleTheme()">🌙 Theme</button>
+                    <button class="header-btn" onclick="logout()">Logout</button>
+                </div>
+            </div>
+
+            <div class="content">
+                <!-- Dashboard -->
+                <div id="dashboard-section" class="section-content">
+                    <div class="grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="activeEmergencies">0</div>
+                            <div class="stat-label">Active Emergencies</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="dispatchedAmbulances">0</div>
+                            <div class="stat-label">Ambulances Active</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="responseTime">7.2</div>
+                            <div class="stat-label">Avg Response (min)</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="completedToday">12</div>
+                            <div class="stat-label">Completed Today</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">🚨 Critical Alerts</div>
+                        <div id="alertsList"></div>
+                    </div>
+                </div>
+
+                <!-- Active Calls -->
+                <div id="active-section" class="section-content hidden">
+                    <div class="card">
+                        <div class="card-title">🚨 Active Emergency Calls</div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Patient</th>
+                                        <th>Location</th>
+                                        <th>Type</th>
+                                        <th>Priority</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="activeCalls">
+                                    <tr>
+                                        <td colspan="7" class="text-center">Loading...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ambulances -->
+                <div id="ambulances-section" class="section-content hidden">
+                    <div class="card">
+                        <div class="card-title">🚑 Ambulance Fleet</div>
+                        <div id="ambulancesList"></div>
+                    </div>
+                </div>
+
+                <!-- Completed -->
+                <div id="completed-section" class="section-content hidden">
+                    <div class="card">
+                        <div class="card-title">✅ Completed Emergencies</div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Patient</th>
+                                        <th>Type</th>
+                                        <th>Location</th>
+                                        <th>Time Taken</th>
+                                        <th>Hospital</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="completedTable">
+                                    <tr>
+                                        <td colspan="5" class="text-center">Loading...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings -->
+                <div id="settings-section" class="section-content hidden">
+                    <div class="card">
+                        <div class="card-title">⚙️ Emergency Settings</div>
+                        <div class="form-group">
+                            <label>Response Target Time (minutes)</label>
+                            <input type="number" id="targetTime" value="10">
+                        </div>
+                        <div class="form-group">
+                            <label>Max Ambulances</label>
+                            <input type="number" id="maxAmbulances" value="20">
+                        </div>
+                        <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dispatch Modal -->
+    <div id="dispatchModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🚑 Dispatch Ambulance</h2>
+                <button class="modal-close" onclick="closeModal('dispatchModal')">×</button>
+            </div>
+            <form onsubmit="dispatchAmbulance(event)">
+                <div class="form-group">
+                    <label>Select Ambulance *</label>
+                    <select id="ambulanceSelect" required>
+                        <option value="">Choose ambulance...</option>
+                        <option value="AMBU-001">AMBU-001 - Location: Thamel</option>
+                        <option value="AMBU-002">AMBU-002 - Location: Bhaktapur</option>
+                        <option value="AMBU-003">AMBU-003 - Location: Patan</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>ETA (minutes)</label>
+                    <input type="number" id="eta" min="1" value="5">
+                </div>
+                <button type="submit" class="btn btn-danger" style="width: 100%;">Dispatch Now</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/api-client.js"></script>
+    <script src="js/dashboard-utils.js"></script>
+    <script>
+        let emergencies = [];
+        let ambulances = [];
+        let completed = [];
+
+        async function init() {
+            // Mock data
+            emergencies = [
+                { _id: '1', userId: { name: 'Rajesh Kumar' }, emergencyType: 'accident', location: 'Kathmandu', priority: 'critical', status: 'pending', ambulanceETA: null },
+                { _id: '2', userId: { name: 'Priya Sharma' }, emergencyType: 'medical', location: 'Bhaktapur', priority: 'high', status: 'dispatched', ambulanceETA: 5 },
+                { _id: '3', userId: { name: 'Amit Singh' }, emergencyType: 'ambulance', location: 'Patan', priority: 'medium', status: 'pending', ambulanceETA: null },
+            ];
+
+            ambulances = [
+                { id: 'AMBU-001', location: 'Thamel', status: 'active', driver: 'Shyam Kumar' },
+                { id: 'AMBU-002', location: 'Bhaktapur', status: 'in_transit', driver: 'Ram Sharma' },
+                { id: 'AMBU-003', location: 'Patan', status: 'available', driver: 'Hari Prasad' },
+            ];
+
+            completed = [
+                { patient: 'Bikram Poudel', type: 'injury', location: 'Kathmandu', timeTaken: '12 min', hospital: 'Kathmandu Medical Center' },
+                { patient: 'Sita Adhikari', type: 'chest pain', location: 'Bhaktapur', timeTaken: '8 min', hospital: 'Nepal Hospital' },
+            ];
+
+            loadAlerts();
+            loadActiveCalls();
+            loadAmbulances();
+            loadCompleted();
+            updateStats();
+        }
+
+        function updateStats() {
+            document.getElementById('activeEmergencies').textContent = emergencies.filter(e => e.status !== 'completed').length;
+            document.getElementById('dispatchedAmbulances').textContent = ambulances.filter(a => a.status !== 'available').length;
+            document.getElementById('completedToday').textContent = completed.length;
+        }
+
+        function loadAlerts() {
+            const list = document.getElementById('alertsList');
+            const critical = emergencies.filter(e => e.priority === 'critical' && e.status === 'pending');
+            list.innerHTML = critical.map(e => `
+                <div class="card emergency-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h3>${escapeHtml(e.userId.name)}</h3>
+                            <p>📍 ${escapeHtml(e.location)}</p>
+                            <p class="priority-critical">🚨 CRITICAL PRIORITY</p>
+                        </div>
+                        <div class="btn-group" style="flex-direction: column;">
+                            <button class="btn btn-danger" onclick="openModal('dispatchModal')">Dispatch Ambulance</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadActiveCalls() {
+            const tbody = document.getElementById('activeCalls');
+            tbody.innerHTML = emergencies.filter(e => e.status !== 'completed').map(e => `
+                <tr>
+                    <td>${e._id}</td>
+                    <td>${escapeHtml(e.userId.name)}</td>
+                    <td>${escapeHtml(e.location)}</td>
+                    <td>${escapeHtml(e.emergencyType)}</td>
+                    <td class="priority-${e.priority}">${e.priority.toUpperCase()}</td>
+                    <td><span class="status-badge status-${e.status}">${e.status}</span></td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-success btn-sm" onclick="assignAmbulance('${e._id}')">Assign</button>
+                            <button class="btn btn-primary btn-sm" onclick="trackEmergency('${e._id}')">Track</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function loadAmbulances() {
+            const list = document.getElementById('ambulancesList');
+            list.innerHTML = ambulances.map(a => `
+                <div class="card">
+                    <div style="display: grid; grid-template-columns: 1fr auto; gap: 2rem; align-items: center;">
+                        <div>
+                            <h3>${a.id}</h3>
+                            <p>👨‍💼 ${escapeHtml(a.driver)}</p>
+                            <p>📍 ${escapeHtml(a.location)}</p>
+                            <p style="margin-top: 0.5rem;">
+                                <span class="status-badge status-${a.status}">${a.status}</span>
+                            </p>
+                        </div>
+                        <div class="btn-group" style="flex-direction: column;">
+                            <button class="btn btn-secondary btn-sm">Call</button>
+                            <button class="btn btn-secondary btn-sm">Track</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadCompleted() {
+            const tbody = document.getElementById('completedTable');
+            tbody.innerHTML = completed.map(c => `
+                <tr>
+                    <td>${escapeHtml(c.patient)}</td>
+                    <td>${escapeHtml(c.type)}</td>
+                    <td>${escapeHtml(c.location)}</td>
+                    <td>${c.timeTaken}</td>
+                    <td>${escapeHtml(c.hospital)}</td>
+                </tr>
+            `).join('');
+        }
+
+        function assignAmbulance(emergencyId) {
+            openModal('dispatchModal');
+        }
+
+        function trackEmergency(emergencyId) {
+            alert('Tracking emergency #' + emergencyId);
+        }
+
+        function dispatchAmbulance(event) {
+            event.preventDefault();
+            const ambulance = document.getElementById('ambulanceSelect').value;
+            showAlert(`Ambulance ${ambulance} dispatched! 🚑`, 'success');
+            closeModal('dispatchModal');
+        }
+
+        function saveSettings() {
+            showAlert('Settings saved! ✅', 'success');
+        }
+
+        function showSection(sectionName) {
+            document.querySelectorAll('.section-content').forEach(s => s.classList.add('hidden'));
+            document.getElementById(`${sectionName}-section`).classList.remove('hidden');
+            document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+        }
+
+        function logout() {
+            api.clearToken();
+            window.location.href = '/frontend/index.html';
+        }
+
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+
+        init();
+    </script>
+</body>
+</html>

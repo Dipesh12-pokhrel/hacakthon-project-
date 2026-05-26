@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediStay Nepal AI - Complete Healthcare Platform</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDembtAqRWabiS6LkqP_q0xG7MdZ7uPx9A"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00a8cc;
+            --primary-dark: #003d5c;
+            --accent: #00d4ff;
+            --success: #06d6a0;
+            --danger: #ff006e;
+            --warning: #ffd60a;
+            --bg-light: #f8f9fa;
+            --text-dark: #1a1a1a;
+            --border-light: #e9ecef;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        /* LOGIN SCREEN */
+        .login-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-screen.hidden {
+            display: none;
+        }
+
+        .login-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            width: 100%;
+            max-width: 1000px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .login-welcome {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .login-welcome h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .login-welcome p {
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .login-form-panel {
+            padding: 3rem 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        .form-tabs button {
+            flex: 1;
+            padding: 1rem;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-weight: 600;
+            cursor: pointer;
+            color: #999;
+            transition: all 0.3s ease;
+        }
+
+        .form-tabs button.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .form-content {
+            display: none;
+        }
+
+        .form-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 168, 204, 0.3);
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-success {
+            background: rgba(6, 214, 160, 0.2);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .alert-error {
+            background: rgba(255, 0, 110, 0.2);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        /* MAIN APPLICATION */
+        .app-container {
+            display: none;
+            flex-direction: column;
+            height: 100vh;
+            background: var(--bg-light);
+        }
+
+        .app-container.active {
+            display: flex;
+        }
+
+        .navbar {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .user-role {
+            font-size: 0.8rem;
+            color: #999;
+            text-transform: uppercase;
+        }
+
+        .btn-logout {
+            background: var(--danger);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-logout:hover {
+            background: #ff0052;
+            transform: scale(1.05);
+        }
+
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: white;
+            border-right: 1px solid var(--border-light);
+            overflow-y: auto;
+            padding: 1rem 0;
+        }
+
+        .sidebar-item {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            border-left: 4px solid transparent;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .sidebar-item:hover {
+            background: var(--bg-light);
+            border-left-color: var(--primary);
+        }
+
+        .sidebar-item.active {
+            background: rgba(0, 168, 204, 0.1);
+            border-left-color: var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* MAP SECTION */
+        #map {
+            width: 100%;
+            height: 600px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .map-controls {
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .map-filter {
+            padding: 0.6rem 1rem;
+            border: 2px solid var(--border-light);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .map-filter.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* PROOF VERIFICATION */
+        .proof-upload {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .upload-area {
+            border: 3px dashed var(--primary);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(0, 168, 204, 0.05);
+        }
+
+        .upload-area:hover {
+            background: rgba(0, 168, 204, 0.1);
+            border-color: var(--accent);
+        }
+
+        .upload-area.dragover {
+            background: rgba(0, 168, 204, 0.2);
+            border-color: var(--accent);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        #proofInput {
+            display: none;
+        }
+
+        .proof-preview {
+            margin-top: 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .proof-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            background: var(--bg-light);
+            aspect-ratio: 1;
+        }
+
+        .proof-item img,
+        .proof-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .proof-item .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* CHATBOT */
+        .chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            height: 500px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 40px rgba(0, 0, 0, 0.16);
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+        }
+
+        .chatbot-header {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 1rem;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .chat-message {
+            display: flex;
+            margin-bottom: 0.8rem;
+        }
+
+        .chat-message.bot {
+            justify-content: flex-start;
+        }
+
+        .chat-message.user {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            word-wrap: break-word;
+        }
+
+        .chat-message.bot .message-content {
+            background: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        .chat-message.user .message-content {
+            background: var(--primary);
+            color: white;
+        }
+
+        .chatbot-input {
+            border-top: 1px solid var(--border-light);
+            padding: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chatbot-input input {
+            flex: 1;
+            padding: 0.6rem;
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .chatbot-input input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(0, 168, 204, 0.1);
+        }
+
+        .chatbot-send {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.6rem 1rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .chatbot-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 200px;
+            }
+
+            .login-container {
+                grid-template-columns: 1fr;
+            }
+
+            .login-welcome {
+                display: none;
+            }
+
+            .chatbot-container {
+                width: 320px;
+                height: 450px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .sidebar {
+                width: 100%;
+                max-height: 150px;
+                display: flex;
+                overflow-x: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border-light);
+                padding: 0;
+            }
+
+            .sidebar-item {
+                min-width: 150px;
+                border-left: none;
+                border-bottom: 4px solid transparent;
+            }
+
+            .sidebar-item.active {
+                border-left: none;
+                border-bottom-color: var(--primary);
+            }
+
+            .main-content {
+                flex-direction: column;
+            }
+
+            .content-area {
+                padding: 1rem;
+            }
+
+            .chatbot-container {
+                width: 100%;
+                height: 400px;
+                border-radius: 12px 12px 0 0;
+                bottom: 0;
+                right: 0;
+            }
+
+            .chatbot-toggle {
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+
+        /* CARDS */
+        .card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            color: #999;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--primary);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .data-table thead {
+            background: var(--bg-light);
+        }
+
+        .data-table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .data-table td {
+            padding: 1rem;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .data-table tbody tr:hover {
+            background: var(--bg-light);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: rgba(6, 214, 160, 0.2);
+            color: var(--success);
+        }
+
+        .badge-pending {
+            background: rgba(255, 214, 10, 0.2);
+            color: var(--warning);
+        }
+
+        .badge-danger {
+            background: rgba(255, 0, 110, 0.2);
+            color: var(--danger);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .theme-toggle {
+            background: var(--bg-light);
+            border: 2px solid var(--border-light);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- LOGIN SCREEN -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-container">
+            <div class="login-welcome">
+                <h1>🏥 MediStay Nepal AI</h1>
+                <p>Complete Healthcare + Hospitality Platform</p>
+                <p style="margin-top: 1rem; font-size: 0.9rem;">AI-Powered Emergency Services, Hospital Booking & Recovery Stays</p>
+            </div>
+            <div class="login-form-panel">
+                <div class="form-tabs">
+                    <button class="active" onclick="switchTab('login')">Sign In</button>
+                    <button onclick="switchTab('register')">Register</button>
+                </div>
+
+                <!-- LOGIN FORM -->
+                <div id="loginForm" class="form-content active">
+                    <div class="alert" id="loginAlert"></div>
+                    <form onsubmit="handleLogin(event)">
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" id="loginEmail" placeholder="your@email.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Sign In</button>
+                    </form>
+                </div>
+
+                <!-- REGISTER FORM -->
+                <div id="registerForm" class="form-content">
+                    <div class="alert" id="registerAlert"></div>
+                    <form onsubmit="handleRegister(event)">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="registerName" placeholder="Your full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" id="registerEmail" placeholder="your@email.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Select Your Role</label>
+                            <select id="registerRole" required>
+                                <option value="">Choose your role...</option>
+                                <option value="patient">👤 Patient</option>
+                                <option value="hospital_admin">🏥 Hospital Admin</option>
+                                <option value="hotel_admin">🏨 Hotel Admin</option>
+                                <option value="emergency_admin">🚑 Emergency Admin</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" id="registerPassword" placeholder="Create a password" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Confirm Password</label>
+                            <input type="password" id="registerConfirm" placeholder="Confirm password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Account</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APPLICATION -->
+    <div class="app-container" id="appContainer">
+        <!-- NAVBAR -->
+        <div class="navbar">
+            <div class="navbar-brand">🏥 MediStay Nepal AI</div>
+            <div class="navbar-right">
+                <div class="user-info">
+                    <div class="user-name" id="userName">User</div>
+                    <div class="user-role" id="userRole">patient</div>
+                </div>
+                <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+                <button class="btn-logout" onclick="handleLogout()">Logout</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- SIDEBAR -->
+            <div class="sidebar">
+                <div class="sidebar-item active" onclick="showSection(event, 'dashboard')">📊 Dashboard</div>
+                <div class="sidebar-item" onclick="showSection(event, 'hospitals')">🏥 Find Hospitals</div>
+                <div class="sidebar-item" onclick="showSection(event, 'hotels')">🏨 Recovery Stays</div>
+                <div class="sidebar-item" onclick="showSection(event, 'appointments')">📅 Appointments</div>
+                <div class="sidebar-item" onclick="showSection(event, 'emergencies')">🚨 Emergency SOS</div>
+                <div class="sidebar-item" onclick="showSection(event, 'proof')">📸 Proof Verification</div>
+                <div class="sidebar-item" onclick="showSection(event, 'profile')">👤 Profile</div>
+            </div>
+
+            <!-- CONTENT AREA -->
+            <div class="content-area">
+                <!-- DASHBOARD SECTION -->
+                <div id="dashboard" class="section active">
+                    <div class="section-title">📊 Dashboard</div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="appointmentCount">0</div>
+                            <div class="stat-label">Appointments</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="bookingCount">0</div>
+                            <div class="stat-label">Bookings</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="emergencyCount">0</div>
+                            <div class="stat-label">Emergencies</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="serverStatus">✅</div>
+                            <div class="stat-label">Server Status</div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">📋 Quick Actions</div>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                            <button class="btn btn-primary" onclick="showSection(null, 'appointments')" style="margin: 0;">📅 Book Appointment</button>
+                            <button class="btn btn-primary" onclick="showSection(null, 'hotels')" style="margin: 0;">🏨 Book Recovery Stay</button>
+                            <button class="btn btn-primary" onclick="showSection(null, 'hospitals')" style="margin: 0;">🏥 Find Hospital</button>
+                            <button class="btn btn-primary" onclick="handleEmergency()" style="margin: 0; background: var(--danger);">🚨 Emergency SOS</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HOSPITALS SECTION (WITH MAP) -->
+                <div id="hospitals" class="section">
+                    <div class="section-title">🏥 Find Hospitals Near You</div>
+                    <div class="map-controls">
+                        <button class="map-filter active" onclick="filterMap(event, 'all')">All Hospitals</button>
+                        <button class="map-filter" onclick="filterMap(event, 'urgent')">Emergency Only</button>
+                        <button class="map-filter" onclick="filterMap(event, 'rated')">Top Rated</button>
+                    </div>
+                    <div id="map"></div>
+                    <div class="card" style="margin-top: 1.5rem;">
+                        <div class="card-title">Hospital List</div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Hospital Name</th>
+                                    <th>Location</th>
+                                    <th>Rating</th>
+                                    <th>Beds</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="hospitalList">
+                                <tr><td colspan="5" class="empty-state">Loading hospitals...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- HOTELS SECTION -->
+                <div id="hotels" class="section">
+                    <div class="section-title">🏨 Recovery Stay Facilities</div>
+                    <div id="hotelsList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;"></div>
+                </div>
+
+                <!-- APPOINTMENTS SECTION -->
+                <div id="appointments" class="section">
+                    <div class="section-title">📅 My Appointments</div>
+                    <div class="card">
+                        <div class="card-title">Book New Appointment</div>
+                        <form onsubmit="handleBookAppointment(event)">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Hospital</label>
+                                    <input type="text" id="appointmentHospital" placeholder="Select hospital" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Doctor</label>
+                                    <input type="text" id="appointmentDoctor" placeholder="Doctor name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Date</label>
+                                    <input type="date" id="appointmentDate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Time</label>
+                                    <input type="time" id="appointmentTime" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Book Appointment</button>
+                        </form>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Your Appointments</div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Hospital</th>
+                                    <th>Doctor</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="appointmentsList">
+                                <tr><td colspan="4" class="empty-state">No appointments yet</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- EMERGENCIES SECTION -->
+                <div id="emergencies" class="section">
+                    <div class="section-title">🚨 Emergency Services</div>
+                    <div class="card" style="background: linear-gradient(135deg, #ff006e 0%, #ff3385 100%); color: white;">
+                        <div style="text-align: center; padding: 2rem;">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">🚑</div>
+                            <h2>EMERGENCY SOS</h2>
+                            <button onclick="handleEmergency()" class="btn" style="background: white; color: var(--danger); margin-top: 1rem; width: 100%; max-width: 300px; font-weight: bold;">CALL AMBULANCE</button>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Emergency History</div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Date/Time</th>
+                                    <th>Location</th>
+                                    <th>Status</th>
+                                    <th>Ambulance</th>
+                                </tr>
+                            </thead>
+                            <tbody id="emergenciesList">
+                                <tr><td colspan="4" class="empty-state">No emergency calls yet</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- PROOF VERIFICATION SECTION -->
+                <div id="proof" class="section">
+                    <div class="section-title">📸 Proof Verification</div>
+                    <div class="proof-upload">
+                        <div class="card-title">Upload Incident Proof (Photo/Video)</div>
+                        <p style="color: #999; margin-bottom: 1rem;">Upload photos or videos to verify incidents for claims</p>
+                        <div class="upload-area" id="uploadArea" onclick="document.getElementById('proofInput').click()">
+                            <div class="upload-icon">📁</div>
+                            <p style="margin-bottom: 0.5rem;"><strong>Click to upload or drag & drop</strong></p>
+                            <p style="color: #999; font-size: 0.9rem;">Supported: JPG, PNG, MP4, MOV (Max 100MB)</p>
+                        </div>
+                        <input type="file" id="proofInput" accept="image/*,video/*" multiple onchange="handleProofUpload(event)">
+                        <div class="proof-preview" id="proofPreview"></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Your Submissions</div>
+                        <div id="proofSubmissions" class="empty-state">
+                            <div class="empty-state-icon">📋</div>
+                            <p>No submissions yet</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROFILE SECTION -->
+                <div id="profile" class="section">
+                    <div class="section-title">👤 My Profile</div>
+                    <div class="card">
+                        <div class="card-title">Personal Information</div>
+                        <form onsubmit="handleProfileUpdate(event)">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Full Name</label>
+                                    <input type="text" id="profileName" placeholder="Full name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" id="profileEmail" placeholder="Email" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label>Phone</label>
+                                    <input type="tel" id="profilePhone" placeholder="Phone number">
+                                </div>
+                                <div class="form-group">
+                                    <label>City</label>
+                                    <input type="text" id="profileCity" placeholder="City">
+                                </div>
+                                <div class="form-group">
+                                    <label>Address</label>
+                                    <input type="text" id="profileAddress" placeholder="Address">
+                                </div>
+                                <div class="form-group">
+                                    <label>Role</label>
+                                    <input type="text" id="profileRole" placeholder="Role" disabled>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Update Profile</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHATBOT -->
+    <button class="chatbot-toggle" id="chatbotToggle" onclick="toggleChatbot()">💬</button>
+    <div class="chatbot-container" id="chatbotContainer" style="display: none;">
+        <div class="chatbot-header">
+            <span>🤖 MediStay Assistant</span>
+            <button onclick="toggleChatbot()" style="background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem;">✕</button>
+        </div>
+        <div class="chatbot-messages" id="chatbotMessages"></div>
+        <div class="chatbot-input">
+            <input type="text" id="chatbotInput" placeholder="Ask me anything..." onkeypress="if(event.key==='Enter') sendChatMessage()">
+            <button class="chatbot-send" onclick="sendChatMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        // API CLIENT
+        const API_BASE_URL = 'http://localhost:5000/api';
+
+        class APIClient {
+            constructor() {
+                this.token = localStorage.getItem('token');
+            }
+
+            setToken(token) {
+                this.token = token;
+                localStorage.setItem('token', token);
+            }
+
+            getToken() {
+                return this.token;
+            }
+
+            clearToken() {
+                this.token = null;
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+            }
+
+            async makeRequest(endpoint, options = {}) {
+                const headers = {
+                    'Content-Type': 'application/json',
+                    ...options.headers,
+                };
+
+                if (this.token) {
+                    headers['Authorization'] = `Bearer ${this.token}`;
+                }
+
+                try {
+                    const url = endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}${endpoint}`;
+                    const response = await fetch(url, { ...options, headers });
+
+                    if (response.status === 401) {
+                        this.clearToken();
+                        location.reload();
+                    }
+
+                    return await response.json();
+                } catch (error) {
+                    console.error('API Error:', error);
+                    return { success: false, message: error.message };
+                }
+            }
+
+            async get(endpoint) {
+                return this.makeRequest(endpoint, { method: 'GET' });
+            }
+
+            async post(endpoint, data) {
+                return this.makeRequest(endpoint, {
+                    method: 'POST',
+                    body: JSON.stringify(data),
+                });
+            }
+
+            async put(endpoint, data) {
+                return this.makeRequest(endpoint, {
+                    method: 'PUT',
+                    body: JSON.stringify(data),
+                });
+            }
+
+            async delete(endpoint) {
+                return this.makeRequest(endpoint, { method: 'DELETE' });
+            }
+        }
+
+        const api = new APIClient();
+        let proofFiles = [];
+        let map = null;
+        let appointments = [];
+
+        // TAB SWITCHING
+        function switchTab(tab) {
+            document.querySelectorAll('.form-tabs button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.form-content').forEach(form => form.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(tab + 'Form').classList.add('active');
+        }
+
+        // LOGIN HANDLER
+        async function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const alertDiv = document.getElementById('loginAlert');
+
+            try {
+                alertDiv.classList.remove('show');
+                const response = await api.post('/auth/login', { email, password });
+
+                if (response.success && response.token) {
+                    api.setToken(response.token);
+                    localStorage.setItem('user', JSON.stringify(response.user));
+                    showApp(response.user);
+                } else {
+                    showAlert(alertDiv, response.message || 'Login failed', 'error');
+                }
+            } catch (error) {
+                showAlert(alertDiv, 'Login error: ' + error.message, 'error');
+            }
+        }
+
+        // REGISTER HANDLER
+        async function handleRegister(event) {
+            event.preventDefault();
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const role = document.getElementById('registerRole').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirm').value;
+            const alertDiv = document.getElementById('registerAlert');
+
+            try {
+                if (password !== confirmPassword) {
+                    showAlert(alertDiv, 'Passwords do not match!', 'error');
+                    return;
+                }
+
+                const response = await api.post('/auth/register', { name, email, role, password });
+
+                if (response.success && response.token) {
+                    api.setToken(response.token);
+                    localStorage.setItem('user', JSON.stringify(response.user));
+                    showAlert(alertDiv, 'Account created successfully!', 'success');
+                    setTimeout(() => showApp(response.user), 500);
+                } else {
+                    showAlert(alertDiv, response.message || 'Registration failed', 'error');
+                }
+            } catch (error) {
+                showAlert(alertDiv, 'Registration error: ' + error.message, 'error');
+            }
+        }
+
+        // LOGOUT HANDLER - FIXED!
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                try {
+                    api.clearToken();
+                    document.getElementById('appContainer').classList.remove('active');
+                    document.getElementById('loginScreen').classList.remove('hidden');
+                    document.getElementById('chatbotContainer').style.display = 'none';
+                    document.getElementById('loginEmail').value = '';
+                    document.getElementById('loginPassword').value = '';
+                    document.getElementById('loginAlert').classList.remove('show');
+                    window.scrollTo(0, 0);
+                } catch(e) {
+                    console.error('Logout error:', e);
+                }
+            }
+        }
+
+        // SHOW APP
+        function showApp(user) {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('appContainer').classList.add('active');
+            document.getElementById('userName').textContent = user.name;
+            document.getElementById('userRole').textContent = user.role.replace('_', ' ').toUpperCase();
+            loadDashboard();
+            initChatbot();
+            setTimeout(initMap, 500);
+        }
+
+        // ALERT FUNCTION
+        function showAlert(element, message, type) {
+            element.textContent = message;
+            element.className = `alert show alert-${type}`;
+            setTimeout(() => element.classList.remove('show'), 5000);
+        }
+
+        // SECTION SWITCHING
+        function showSection(evt, sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            if (evt && evt.target) {
+                evt.target.closest('.sidebar-item').classList.add('active');
+            }
+
+            if (sectionId === 'hospitals') {
+                setTimeout(initMap, 100);
+            }
+        }
+
+        // LOAD DASHBOARD
+        function loadDashboard() {
+            document.getElementById('appointmentCount').textContent = appointments.length;
+            document.getElementById('bookingCount').textContent = '0';
+            document.getElementById('emergencyCount').textContent = '0';
+            document.getElementById('serverStatus').textContent = '✅';
+        }
+
+        // INIT MAP
+        function initMap() {
+            const mapElement = document.getElementById('map');
+            if (!mapElement || map) return;
+
+            const kathmandu = { lat: 27.7172, lng: 85.3240 };
+            map = new google.maps.Map(mapElement, {
+                zoom: 13,
+                center: kathmandu,
+            });
+
+            // Sample hospitals
+            const hospitals = [
+                { name: 'Kathmandu Medical Center', lat: 27.7172, lng: 85.3240, rating: 4.8 },
+                { name: 'Nepal Police Hospital', lat: 27.7200, lng: 85.3150, rating: 4.5 },
+                { name: 'Tribhuvan University Teaching Hospital', lat: 27.7100, lng: 85.3300, rating: 4.6 },
+            ];
+
+            hospitals.forEach(hospital => {
+                new google.maps.Marker({
+                    position: { lat: hospital.lat, lng: hospital.lng },
+                    map: map,
+                    title: hospital.name,
+                    icon: 'http://maps.google.com/mapfiles/ms/icons/hospital.png'
+                });
+            });
+
+            // Load hospital list
+            const tbody = document.getElementById('hospitalList');
+            tbody.innerHTML = '';
+            hospitals.forEach(h => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${h.name}</td>
+                        <td>Kathmandu, Nepal</td>
+                        <td>⭐ ${h.rating}</td>
+                        <td>45</td>
+                        <td><button class="btn btn-primary" style="padding: 0.5rem 1rem;">Book</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function filterMap(evt, type) {
+            document.querySelectorAll('.map-filter').forEach(b => b.classList.remove('active'));
+            evt.target.classList.add('active');
+        }
+
+        // PROOF UPLOAD
+        function handleProofUpload(event) {
+            const files = Array.from(event.target.files);
+            proofFiles.push(...files);
+            displayProofPreview();
+        }
+
+        function displayProofPreview() {
+            const preview = document.getElementById('proofPreview');
+            preview.innerHTML = '';
+            proofFiles.forEach((file, index) => {
+                const div = document.createElement('div');
+                div.className = 'proof-item';
+                if (file.type.startsWith('image')) {
+                    const url = URL.createObjectURL(file);
+                    div.innerHTML = `<img src="${url}"><button class="remove-btn" onclick="removeProof(${index})">×</button>`;
+                } else {
+                    const url = URL.createObjectURL(file);
+                    div.innerHTML = `<video><source src="${url}"></video><button class="remove-btn" onclick="removeProof(${index})">×</button>`;
+                }
+                preview.appendChild(div);
+            });
+        }
+
+        function removeProof(index) {
+            proofFiles.splice(index, 1);
+            displayProofPreview();
+        }
+
+        // APPOINTMENT BOOKING
+        function handleBookAppointment(event) {
+            event.preventDefault();
+            const data = {
+                hospital: document.getElementById('appointmentHospital').value,
+                doctor: document.getElementById('appointmentDoctor').value,
+                date: document.getElementById('appointmentDate').value,
+                time: document.getElementById('appointmentTime').value,
+            };
+            appointments.push(data);
+            alert('✅ Appointment booked successfully!');
+            event.target.reset();
+            updateAppointmentsList();
+            loadDashboard();
+        }
+
+        function updateAppointmentsList() {
+            const tbody = document.getElementById('appointmentsList');
+            tbody.innerHTML = '';
+            if (appointments.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No appointments yet</td></tr>';
+            } else {
+                appointments.forEach(a => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${a.hospital}</td>
+                            <td>${a.doctor}</td>
+                            <td>${a.date}</td>
+                            <td><span class="badge badge-pending">Pending</span></td>
+                        </tr>
+                    `;
+                });
+            }
+        }
+
+        // EMERGENCY
+        function handleEmergency() {
+            alert('🚑 Emergency ambulance has been called! Location shared: 27.7172, 85.3240\n\nAmbulance ETA: 5 minutes');
+            showSection(null, 'emergencies');
+        }
+
+        // PROFILE UPDATE
+        function handleProfileUpdate(event) {
+            event.preventDefault();
+            const user = JSON.parse(localStorage.getItem('user'));
+            user.name = document.getElementById('profileName').value;
+            user.phone = document.getElementById('profilePhone').value;
+            user.city = document.getElementById('profileCity').value;
+            user.address = document.getElementById('profileAddress').value;
+            localStorage.setItem('user', JSON.stringify(user));
+            alert('✅ Profile updated successfully!');
+        }
+
+        // CHATBOT
+        function toggleChatbot() {
+            const container = document.getElementById('chatbotContainer');
+            container.style.display = container.style.display === 'none' ? 'flex' : 'none';
+        }
+
+        function initChatbot() {
+            const messagesDiv = document.getElementById('chatbotMessages');
+            messagesDiv.innerHTML = `
+                <div class="chat-message bot">
+                    <div class="message-content">👋 Hello! I'm your MediStay Assistant. How can I help you today?</div>
+                </div>
+            `;
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chatbotInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            const messagesDiv = document.getElementById('chatbotMessages');
+            messagesDiv.innerHTML += `<div class="chat-message user"><div class="message-content">${message}</div></div>`;
+
+            // Bot response
+            const responses = [
+                '📅 You can book appointments with hospitals in the "Appointments" section.',
+                '🏨 To book a recovery stay, go to "Recovery Stays" section.',
+                '🚨 In case of emergency, click the red SOS button - ambulance will be dispatched immediately.',
+                '📸 Upload proof documents (photos/videos) in the "Proof Verification" section for claims.',
+                '👤 You can view and update your profile information anytime.',
+                '🏥 Find nearby hospitals with live map tracking in the "Find Hospitals" section.',
+                '💬 I am available 24/7 to help guide you through the platform.',
+            ];
+            const response = responses[Math.floor(Math.random() * responses.length)];
+
+            setTimeout(() => {
+                messagesDiv.innerHTML += `<div class="chat-message bot"><div class="message-content">${response}</div></div>`;
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }, 500);
+
+            input.value = '';
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        // THEME TOGGLE
+        function toggleTheme() {
+            document.body.style.filter = document.body.style.filter === 'invert(1)' ? 'invert(0)' : 'invert(1)';
+        }
+
+        // CHECK IF LOGGED IN
+        window.addEventListener('load', () => {
+            const user = localStorage.getItem('user');
+            const token = localStorage.getItem('token');
+            if (user && token) {
+                showApp(JSON.parse(user));
+            }
+        });
+    </script>
+</body>
+</html>

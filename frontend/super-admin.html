@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediStay Nepal AI - Super Admin</title>
+    <link rel="stylesheet" href="css/admin-dashboard.css">
+</head>
+<body>
+    <div class="layout">
+        <div class="sidebar">
+            <div class="sidebar-brand">👑 Super Admin</div>
+            <ul class="sidebar-menu">
+                <li><a onclick="showSection('dashboard')" class="active">📊 Dashboard</a></li>
+                <li><a onclick="showSection('users')">👥 Users</a></li>
+                <li><a onclick="showSection('hospitals')">🏥 Hospitals</a></li>
+                <li><a onclick="showSection('hotels')">🏨 Hotels</a></li>
+                <li><a onclick="showSection('analytics')">📈 Analytics</a></li>
+                <li><a onclick="showSection('settings')">⚙️ Settings</a></li>
+                <li><a onclick="logout()">🚪 Logout</a></li>
+            </ul>
+        </div>
+
+        <div class="main-content">
+            <div class="header">
+                <div class="header-title">👑 Super Admin Dashboard</div>
+                <div class="header-actions">
+                    <button class="header-btn" onclick="toggleTheme()">🌙 Theme</button>
+                    <button class="header-btn" onclick="logout()">Logout</button>
+                </div>
+            </div>
+
+            <div class="content">
+                <!-- Dashboard -->
+                <div id="dashboard-section" class="section-content">
+                    <div class="grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalUsers">1,245</div>
+                            <div class="stat-label">Total Users</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalHospitals">45</div>
+                            <div class="stat-label">Active Hospitals</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalHotels">28</div>
+                            <div class="stat-label">Active Hotels</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalBookings">3,567</div>
+                            <div class="stat-label">Total Bookings</div>
+                        </div>
+                    </div>
+
+                    <div class="grid">
+                        <div class="card">
+                            <div class="card-title">📊 System Status</div>
+                            <div style="padding: 1.5rem 0;">
+                                <div style="margin-bottom: 1rem;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                        <span>Server Status</span>
+                                        <span style="color: var(--success-color); font-weight: 600;">✅ Online</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 1rem;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                        <span>Database Status</span>
+                                        <span style="color: var(--success-color); font-weight: 600;">✅ Connected</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                        <span>Uptime</span>
+                                        <span style="color: var(--primary-color); font-weight: 600;">99.9%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-title">🚀 Recent Activity</div>
+                            <div style="padding: 1rem 0;">
+                                <p style="padding: 0.5rem 0; border-bottom: 1px solid rgba(0,0,0,0.1);">📅 5 new appointments today</p>
+                                <p style="padding: 0.5rem 0; border-bottom: 1px solid rgba(0,0,0,0.1);">🏨 3 new bookings created</p>
+                                <p style="padding: 0.5rem 0; border-bottom: 1px solid rgba(0,0,0,0.1);">👤 12 new users registered</p>
+                                <p style="padding: 0.5rem 0;">🚨 2 emergency alerts handled</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Users -->
+                <div id="users-section" class="section-content hidden">
+                    <div class="card">
+                        <div class="card-title">👥 User Management</div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Status</th>
+                                        <th>Joined</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersTable">
+                                    <tr>
+                                        <td colspan="6" class="text-center">Loading...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hospitals -->
+                <div id="hospitals-section" class="section-content hidden">
+                    <div class="card">
+                        <div class="card-title">🏥 Hospital Management</div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Hospital Name</th>
+                                        <th>City</th>
+                                        <th>Admin</th>
+                                        <th>Status</th>
+                                        <th>Rating</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="hospitalsTable">
+                                    <tr>
+                                        <td colspan="6" class="text-center">Loading...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hotels -->
+                <div id="hotels-section" class="section-content hidden">
+                    <div class="card">
+                        <div class="card-title">🏨 Hotel Management</div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Hotel Name</th>
+                                        <th>City</th>
+                                        <th>Admin</th>
+                                        <th>Status</th>
+                                        <th>Rating</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="hotelsTable">
+                                    <tr>
+                                        <td colspan="6" class="text-center">Loading...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analytics -->
+                <div id="analytics-section" class="section-content hidden">
+                    <div class="grid">
+                        <div class="card">
+                            <div class="card-title">📈 Bookings Trend</div>
+                            <div style="height: 200px; background: linear-gradient(180deg, rgba(0,168,204,0.1), rgba(0,212,255,0.1)); border-radius: 10px; display: flex; align-items: flex-end; justify-content: space-around; padding: 1rem;">
+                                <div style="width: 30px; height: 60%; background: var(--primary-color); border-radius: 5px;"></div>
+                                <div style="width: 30px; height: 75%; background: var(--primary-color); border-radius: 5px;"></div>
+                                <div style="width: 30px; height: 85%; background: var(--primary-color); border-radius: 5px;"></div>
+                                <div style="width: 30px; height: 70%; background: var(--primary-color); border-radius: 5px;"></div>
+                                <div style="width: 30px; height: 90%; background: var(--primary-color); border-radius: 5px;"></div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-title">🏥 Hospitals by City</div>
+                            <div style="padding: 1rem 0;">
+                                <div style="margin-bottom: 1rem;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
+                                        <span>Kathmandu</span>
+                                        <strong>18</strong>
+                                    </div>
+                                    <div style="height: 8px; background: rgba(0,0,0,0.1); border-radius: 4px; overflow: hidden;">
+                                        <div style="height: 100%; background: var(--primary-color); width: 40%;"></div>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 1rem;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
+                                        <span>Pokhara</span>
+                                        <strong>12</strong>
+                                    </div>
+                                    <div style="height: 8px; background: rgba(0,0,0,0.1); border-radius: 4px; overflow: hidden;">
+                                        <div style="height: 100%; background: var(--accent-color); width: 27%;"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
+                                        <span>Other Cities</span>
+                                        <strong>15</strong>
+                                    </div>
+                                    <div style="height: 8px; background: rgba(0,0,0,0.1); border-radius: 4px; overflow: hidden;">
+                                        <div style="height: 100%; background: var(--success-color); width: 33%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings -->
+                <div id="settings-section" class="section-content hidden">
+                    <div class="card">
+                        <div class="card-title">⚙️ System Settings</div>
+                        <div class="form-group">
+                            <label>Site Name</label>
+                            <input type="text" value="MediStay Nepal AI">
+                        </div>
+                        <div class="form-group">
+                            <label>Admin Email</label>
+                            <input type="email" value="admin@medistay.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Support Phone</label>
+                            <input type="tel" value="+977-1-4000000">
+                        </div>
+                        <div class="form-group">
+                            <label>Maintenance Mode</label>
+                            <select>
+                                <option>OFF</option>
+                                <option>ON</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api-client.js"></script>
+    <script src="js/dashboard-utils.js"></script>
+    <script>
+        const users = [
+            { name: 'Rajesh Kumar', email: 'rajesh@email.com', role: 'patient', status: 'active', joined: '2026-05-01' },
+            { name: 'Dr. Ramesh Sharma', email: 'dr.ramesh@hospital.com', role: 'hospital_admin', status: 'active', joined: '2026-04-15' },
+            { name: 'Priya Patel', email: 'priya@hotel.com', role: 'hotel_admin', status: 'active', joined: '2026-04-20' },
+        ];
+
+        const hospitals = [
+            { name: 'Kathmandu Medical Center', city: 'Kathmandu', admin: 'Dr. Ramesh', status: 'approved', rating: 4.8 },
+            { name: 'Nepal Hospital', city: 'Kathmandu', admin: 'Dr. Bikram', status: 'approved', rating: 4.6 },
+            { name: 'Pokhara Medical', city: 'Pokhara', admin: 'Dr. Hari', status: 'pending', rating: 4.5 },
+        ];
+
+        const hotels = [
+            { name: 'MediStay Comfort', city: 'Kathmandu', admin: 'Priya Patel', status: 'approved', rating: 4.2 },
+            { name: 'Patient Care Lodge', city: 'Kathmandu', admin: 'Ram Sharma', status: 'approved', rating: 4.5 },
+            { name: 'Recovery Inn', city: 'Pokhara', admin: 'Sita Adhikari', status: 'pending', rating: 4.3 },
+        ];
+
+        async function init() {
+            loadUsers();
+            loadHospitals();
+            loadHotels();
+        }
+
+        function loadUsers() {
+            const tbody = document.getElementById('usersTable');
+            tbody.innerHTML = users.map(u => `
+                <tr>
+                    <td>${escapeHtml(u.name)}</td>
+                    <td>${escapeHtml(u.email)}</td>
+                    <td><span class="status-badge" style="background: rgba(0,168,204,0.2); color: var(--primary-color);">${u.role}</span></td>
+                    <td><span class="status-badge status-confirmed">${u.status}</span></td>
+                    <td>${u.joined}</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-secondary btn-sm" onclick="editUser('${u.name}')">Edit</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteUser('${u.name}')">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function loadHospitals() {
+            const tbody = document.getElementById('hospitalsTable');
+            tbody.innerHTML = hospitals.map(h => `
+                <tr>
+                    <td>${escapeHtml(h.name)}</td>
+                    <td>${escapeHtml(h.city)}</td>
+                    <td>${escapeHtml(h.admin)}</td>
+                    <td><span class="status-badge status-${h.status === 'approved' ? 'confirmed' : 'pending'}">${h.status}</span></td>
+                    <td>⭐ ${h.rating}</td>
+                    <td>
+                        <div class="btn-group">
+                            ${h.status === 'pending' ? `<button class="btn btn-success btn-sm" onclick="approveHospital('${h.name}')">Approve</button>` : ''}
+                            <button class="btn btn-danger btn-sm" onclick="rejectHospital('${h.name}')">Reject</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function loadHotels() {
+            const tbody = document.getElementById('hotelsTable');
+            tbody.innerHTML = hotels.map(h => `
+                <tr>
+                    <td>${escapeHtml(h.name)}</td>
+                    <td>${escapeHtml(h.city)}</td>
+                    <td>${escapeHtml(h.admin)}</td>
+                    <td><span class="status-badge status-${h.status === 'approved' ? 'confirmed' : 'pending'}">${h.status}</span></td>
+                    <td>⭐ ${h.rating}</td>
+                    <td>
+                        <div class="btn-group">
+                            ${h.status === 'pending' ? `<button class="btn btn-success btn-sm" onclick="approveHotel('${h.name}')">Approve</button>` : ''}
+                            <button class="btn btn-danger btn-sm" onclick="rejectHotel('${h.name}')">Reject</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function approveHospital(name) {
+            showAlert(`Hospital "${name}" approved! ✅`, 'success');
+        }
+
+        function rejectHospital(name) {
+            showAlert(`Hospital "${name}" rejected`, 'danger');
+        }
+
+        function approveHotel(name) {
+            showAlert(`Hotel "${name}" approved! ✅`, 'success');
+        }
+
+        function rejectHotel(name) {
+            showAlert(`Hotel "${name}" rejected`, 'danger');
+        }
+
+        function editUser(name) {
+            showAlert(`Editing user: ${name}`, 'info');
+        }
+
+        function deleteUser(name) {
+            showAlert(`User "${name}" deleted`, 'danger');
+        }
+
+        function saveSettings() {
+            showAlert('Settings saved! ✅', 'success');
+        }
+
+        function showSection(sectionName) {
+            document.querySelectorAll('.section-content').forEach(s => s.classList.add('hidden'));
+            document.getElementById(`${sectionName}-section`).classList.remove('hidden');
+            document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+        }
+
+        function logout() {
+            api.clearToken();
+            window.location.href = '/frontend/index.html';
+        }
+
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+
+        init();
+    </script>
+</body>
+</html>

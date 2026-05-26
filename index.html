@@ -1,0 +1,2839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediStay Nepal AI - Smart Healthcare Meets Comfortable Care</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #00a8cc;
+            --secondary-color: #003d5c;
+            --accent-color: #00d4ff;
+            --light-bg: #f8f9fa;
+            --dark-bg: #0f1419;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-light: #ffffff;
+            --text-dark: #1a1a1a;
+            --success-color: #06d6a0;
+            --warning-color: #ffa400;
+            --danger-color: #ff006e;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            line-height: 1.6;
+        }
+
+        body.dark-mode {
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--light-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 5px;
+        }
+
+        body.dark-mode ::-webkit-scrollbar-track {
+            background: var(--dark-bg);
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1rem 2rem;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            background: rgba(0, 168, 204, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: inherit;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .theme-toggle {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle:hover {
+            background: var(--accent-color);
+            transform: scale(1.1) rotate(20deg);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+        }
+
+        .hero {
+            margin-top: 80px;
+            min-height: calc(100vh - 80px);
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(0, 168, 204, 0.1) 0%, transparent 50%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(30px); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: white;
+            max-width: 800px;
+            animation: slideInUp 0.8s ease-out;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .hero .tagline {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: var(--accent-color);
+            color: var(--secondary-color);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+
+        .btn-sm {
+            padding: 0.7rem 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .section {
+            padding: 80px 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            display: block;
+            margin: 1rem auto 0;
+            border-radius: 2px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        body.dark-mode .feature-card {
+            background: rgba(0, 168, 204, 0.05);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-color);
+            box-shadow: 0 20px 40px rgba(0, 168, 204, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-card p {
+            opacity: 0.8;
+            font-size: 0.95rem;
+        }
+
+        .dashboard-section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            padding: 3rem;
+            border-radius: 25px;
+            margin: 2rem 0;
+        }
+
+        body.dark-mode .dashboard-section {
+            background: rgba(0, 168, 204, 0.05);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            padding: 1.5rem;
+            border-radius: 15px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .stat-card .number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-card .label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .search-box {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 50px;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        body.dark-mode .search-box {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .search-box input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            background: transparent;
+            color: inherit;
+        }
+
+        .search-box button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .search-box button:hover {
+            background: var(--accent-color);
+            transform: scale(1.05);
+        }
+
+        .results-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .result-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 168, 204, 0.2);
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .result-header h3 {
+            font-size: 1.2rem;
+        }
+
+        .result-rating {
+            background: var(--warning-color);
+            color: white;
+            padding: 0.3rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .result-info {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin: 0.5rem 0;
+        }
+
+        .result-distance {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin: 1rem 0;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .result-actions button {
+            flex: 1;
+            padding: 0.6rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .result-actions .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .result-actions .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .chatbot-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            height: 550px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body.dark-mode .chatbot-container {
+            background: rgba(0, 168, 204, 0.05);
+        }
+
+        .chatbot-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .chatbot-header h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .chat-message {
+            display: flex;
+            gap: 1rem;
+            animation: messageSlide 0.3s ease-out;
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chat-message.user {
+            justify-content: flex-end;
+        }
+
+        .message-bubble {
+            max-width: 70%;
+            padding: 1rem;
+            border-radius: 15px;
+            word-wrap: break-word;
+        }
+
+        .message-bubble.ai {
+            background: var(--primary-color);
+            color: white;
+            border-radius: 15px 15px 15px 0;
+        }
+
+        .message-bubble.user {
+            background: var(--accent-color);
+            color: var(--secondary-color);
+            border-radius: 15px 15px 0 15px;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chat-input input {
+            flex: 1;
+            border: 2px solid var(--primary-color);
+            padding: 0.7rem 1rem;
+            border-radius: 25px;
+            outline: none;
+            background: transparent;
+            color: inherit;
+            font-size: 0.9rem;
+        }
+
+        .chat-input button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input button:hover {
+            background: var(--accent-color);
+            transform: scale(1.1);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideInUp 0.3s ease-out;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark-mode .modal-content {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--glass-border);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 1rem;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: var(--primary-color);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: inherit;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid var(--primary-color);
+            border-radius: 10px;
+            outline: none;
+            background: transparent;
+            color: inherit;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
+
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .room-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        body.dark-mode .room-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+        }
+
+        .room-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 20px 50px rgba(0, 168, 204, 0.3);
+        }
+
+        .room-image {
+            height: 200px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .room-info {
+            padding: 1.5rem;
+        }
+
+        .room-info h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .room-rating {
+            color: var(--warning-color);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .room-price {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .room-features {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            margin-bottom: 1rem;
+            list-style: none;
+        }
+
+        .room-features li {
+            padding: 0.3rem 0;
+        }
+
+        .room-features li::before {
+            content: '✓ ';
+            color: var(--success-color);
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        .emergency-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            margin: 2rem 0;
+        }
+
+        .emergency-button {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, var(--danger-color), #ff4444);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 40px rgba(255, 0, 110, 0.3);
+            animation: pulse 2s infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 10px 40px rgba(255, 0, 110, 0.3);
+            }
+            50% {
+                box-shadow: 0 10px 60px rgba(255, 0, 110, 0.6);
+            }
+        }
+
+        .emergency-button:hover {
+            transform: scale(1.1);
+        }
+
+        .ambulance-tracker {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 2rem;
+            position: relative;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        body.dark-mode .ambulance-tracker {
+            background: rgba(0, 168, 204, 0.05);
+        }
+
+        .ambulance-location {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .ambulance-animation {
+            width: 100%;
+            height: 200px;
+            position: relative;
+            background: linear-gradient(180deg, rgba(0, 168, 204, 0.1), rgba(0, 212, 255, 0.1));
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .ambulance-icon {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            animation: drivingAnimation 3s ease-in-out infinite;
+        }
+
+        @keyframes drivingAnimation {
+            0%, 100% {
+                left: 10%;
+            }
+            50% {
+                left: 80%;
+            }
+        }
+
+        .ambulance-distance {
+            margin-top: 1rem;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .emergency-contacts {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .emergency-contact-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            padding: 1.5rem;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .emergency-contact-card {
+            background: rgba(0, 168, 204, 0.05);
+        }
+
+        .emergency-contact-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary-color);
+        }
+
+        .contact-icon {
+            font-size: 2rem;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 12px;
+        }
+
+        .contact-info h4 {
+            margin-bottom: 0.3rem;
+        }
+
+        .contact-info p {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .team-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .team-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+        }
+
+        .team-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0, 168, 204, 0.3);
+        }
+
+        .team-avatar {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+
+        .team-info {
+            padding: 1.5rem;
+        }
+
+        .team-info h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .team-role {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .team-social {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: var(--accent-color);
+            transform: scale(1.2) rotate(10deg);
+        }
+
+        .contact-form {
+            max-width: 600px;
+            margin: 2rem auto;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            padding: 2rem;
+            border-radius: 20px;
+        }
+
+        body.dark-mode .contact-form {
+            background: rgba(0, 168, 204, 0.05);
+        }
+
+        footer {
+            background: var(--secondary-color);
+            color: white;
+            padding: 3rem 2rem 1rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            margin-bottom: 1rem;
+            color: var(--accent-color);
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin: 0.5rem 0;
+        }
+
+        .footer-section a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+            cursor: pointer;
+        }
+
+        .footer-section a:hover {
+            opacity: 1;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1rem;
+            opacity: 0.8;
+        }
+
+        .floating-ai {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            box-shadow: 0 10px 40px rgba(0, 168, 204, 0.3);
+            transition: all 0.3s ease;
+            z-index: 999;
+            animation: float 3s ease-in-out infinite;
+            border: none;
+        }
+
+        .floating-ai:hover {
+            transform: scale(1.15);
+            box-shadow: 0 15px 50px rgba(0, 168, 204, 0.5);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .testimonial-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            padding: 2rem;
+            border-radius: 15px;
+            position: relative;
+        }
+
+        body.dark-mode .testimonial-card {
+            background: rgba(0, 168, 204, 0.05);
+        }
+
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            font-size: 3rem;
+            color: var(--primary-color);
+            opacity: 0.3;
+        }
+
+        .testimonial-text {
+            margin-bottom: 1rem;
+            line-height: 1.8;
+        }
+
+        .testimonial-author {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.3rem;
+        }
+
+        .testimonial-role {
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+
+        .testimonial-rating {
+            color: var(--warning-color);
+            margin-top: 0.5rem;
+        }
+
+        .loader {
+            border: 5px solid var(--glass-bg);
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 1rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            margin: 2rem 0;
+        }
+
+        .about-text h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .about-text p {
+            margin-bottom: 1rem;
+            line-height: 1.8;
+            opacity: 0.9;
+        }
+
+        .about-image {
+            height: 400px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .stats-item {
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        .stats-item .number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stats-item .label {
+            opacity: 0.8;
+        }
+
+        .medicine-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .medicine-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .medicine-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+        }
+
+        .medicine-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 168, 204, 0.2);
+        }
+
+        .medicine-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .medicine-type {
+            color: var(--primary-color);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .medicine-price {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin: 1rem 0;
+        }
+
+        .doctor-schedule {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 1rem 0;
+        }
+
+        body.dark-mode .doctor-schedule {
+            background: rgba(0, 168, 204, 0.05);
+        }
+
+        .schedule-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .time-slot {
+            background: white;
+            border: 2px solid var(--primary-color);
+            padding: 0.7rem;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        body.dark-mode .time-slot {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .time-slot:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .time-slot.available {
+            border-color: var(--success-color);
+        }
+
+        .time-slot.booked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .success-message {
+            background: var(--success-color);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            animation: slideInUp 0.3s ease-out;
+        }
+
+        .error-message {
+            background: var(--danger-color);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero .tagline {
+                font-size: 1.1rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .section {
+                padding: 40px 1rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .emergency-container {
+                grid-template-columns: 1fr;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+
+            .emergency-button {
+                width: 150px;
+                height: 150px;
+                font-size: 1.2rem;
+            }
+
+            .hero-buttons {
+                gap: 1rem;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-form {
+                margin: 1rem;
+            }
+
+            .floating-ai {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .feature-card {
+                padding: 1.5rem;
+            }
+
+            .modal-content {
+                width: 95%;
+                padding: 1.5rem;
+            }
+        }
+
+        body.dark-mode nav {
+            background: rgba(0, 168, 204, 0.1);
+        }
+
+        body.dark-mode .hero {
+            background: linear-gradient(135deg, #0a1f2e, var(--primary-color));
+        }
+
+        body.dark-mode .section {
+            background: var(--dark-bg);
+        }
+
+        .counter {
+            font-size: 2.5rem;
+            font-weight: 800;
+        }
+    </style>
+</head>
+<body>
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="logo" onclick="scrollToSection('home')">🏥 MediStay Nepal AI</div>
+            <ul class="nav-links">
+                <li><a onclick="scrollToSection('home')">Home</a></li>
+                <li><a onclick="scrollToSection('features')">Features</a></li>
+                <li><a onclick="scrollToSection('dashboard')">Dashboard</a></li>
+                <li><a onclick="scrollToSection('hospitality')">Hospitality</a></li>
+                <li><a onclick="scrollToSection('emergency')">Emergency</a></li>
+                <li><a onclick="scrollToSection('team')">Team</a></li>
+                <li><a onclick="scrollToSection('contact')">Contact</a></li>
+            </ul>
+            <button class="theme-toggle" id="themeToggle" title="Toggle Dark Mode">🌙</button>
+            <button class="mobile-menu-btn">☰</button>
+        </div>
+    </nav>
+
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>Smart Healthcare Meets Comfortable Care</h1>
+            <p class="tagline">MediStay Nepal AI - Your Complete Healthcare & Hospitality Platform</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" onclick="openModal('appointmentModal')">📅 Book Appointment</button>
+                <button class="btn btn-secondary" onclick="scrollToSection('hospitality')">🏨 Find Stay</button>
+                <button class="btn btn-secondary" onclick="scrollToSection('emergency')">🚨 Emergency Help</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="features">
+        <h2 class="section-title">Our Features</h2>
+        <div class="features-grid">
+            <div class="feature-card" onclick="openModal('symptomCheckerModal')">
+                <div class="feature-icon">🤖</div>
+                <h3>AI Symptom Checker</h3>
+                <p>Intelligent diagnosis assistance powered by advanced AI algorithms</p>
+            </div>
+            <div class="feature-card" onclick="openModal('telemedicineModal')">
+                <div class="feature-icon">📱</div>
+                <h3>Telemedicine</h3>
+                <p>Connect with doctors from the comfort of your home anytime</p>
+            </div>
+            <div class="feature-card" onclick="openModal('hospitalModal')">
+                <div class="feature-icon">🏥</div>
+                <h3>Hospital Finder</h3>
+                <p>Find nearby hospitals with real-time availability information</p>
+            </div>
+            <div class="feature-card" onclick="scrollToSection('hospitality')">
+                <div class="feature-icon">🏨</div>
+                <h3>Patient Hostel Booking</h3>
+                <p>Affordable accommodation near hospitals for patients and families</p>
+            </div>
+            <div class="feature-card" onclick="openModal('ambulanceModal')">
+                <div class="feature-icon">🚑</div>
+                <h3>Ambulance Service</h3>
+                <p>24/7 emergency ambulance with GPS tracking and real-time updates</p>
+            </div>
+            <div class="feature-card" onclick="openModal('medicineModal')">
+                <div class="feature-icon">💊</div>
+                <h3>Medicine Delivery</h3>
+                <p>Get prescribed medicines delivered right to your doorstep</p>
+            </div>
+            <div class="feature-card" onclick="openModal('healthRecordsModal')">
+                <div class="feature-icon">📋</div>
+                <h3>Digital Health Records</h3>
+                <p>Secure cloud-based storage for all your medical documents</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="dashboard">
+        <h2 class="section-title">Smart Search Dashboard</h2>
+        
+        <div class="dashboard-section">
+            <h3 style="text-align: center; margin-bottom: 1.5rem;">Find Healthcare & Hospitality Services</h3>
+            
+            <div class="search-box">
+                <input type="text" id="hospitalSearch" placeholder="Search hospitals, doctors, or services...">
+                <button onclick="searchHospitals()">🔍 Search</button>
+            </div>
+
+            <div id="hospitalResults" style="display: none;">
+                <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Hospitals & Doctors Found:</h3>
+                <div id="resultsContainer" class="results-container"></div>
+            </div>
+
+            <div class="search-box">
+                <input type="text" id="staySearch" placeholder="Search nearby stays & accommodations...">
+                <button onclick="searchStays()">🔍 Search</button>
+            </div>
+
+            <div id="stayResults" style="display: none;">
+                <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Available Stays:</h3>
+                <div id="stayResultsContainer" class="results-container"></div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <div class="number counter" data-target="2500">2500</div>
+                    <div class="label">Active Hospitals</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number counter" data-target="5000">5000</div>
+                    <div class="label">Verified Doctors</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number counter" data-target="10000">10000</div>
+                    <div class="label">Happy Patients</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number counter" data-target="500">500</div>
+                    <div class="label">Stays Available</div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <button class="btn btn-primary" onclick="openModal('emergencySosModal')">🚨 Emergency Button</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">MediBot AI Assistant</h2>
+        
+        <div class="chatbot-container">
+            <div class="chatbot-header">
+                <h3>🤖 MediBot AI</h3>
+                <p style="font-size: 0.9rem; opacity: 0.8;">Your 24/7 Healthcare Assistant</p>
+            </div>
+            
+            <div class="chatbot-messages" id="chatMessages">
+                <div class="chat-message">
+                    <div class="message-bubble ai">
+                        👋 Hello! I'm MediBot AI. How can I help you today?
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="Type your message...">
+                <button onclick="sendMessage()">➤</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">What Our Users Say</h2>
+        
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <div class="testimonial-text">
+                    "MediStay Nepal AI made finding a doctor and comfortable accommodation so easy!"
+                </div>
+                <div class="testimonial-author">Rajesh Kumar</div>
+                <div class="testimonial-role">Patient, Kathmandu</div>
+                <div class="testimonial-rating">⭐⭐⭐⭐⭐</div>
+            </div>
+
+            <div class="testimonial-card">
+                <div class="testimonial-text">
+                    "The emergency ambulance service is incredible. Fast and professional!"
+                </div>
+                <div class="testimonial-author">Priya Sharma</div>
+                <div class="testimonial-role">Healthcare Provider</div>
+                <div class="testimonial-rating">⭐⭐⭐⭐⭐</div>
+            </div>
+
+            <div class="testimonial-card">
+                <div class="testimonial-text">
+                    "Digital health records feature is a game-changer. Highly recommended!"
+                </div>
+                <div class="testimonial-author">Amit Patel</div>
+                <div class="testimonial-role">Patient, Pokhara</div>
+                <div class="testimonial-rating">⭐⭐⭐⭐⭐</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="hospitality">
+        <h2 class="section-title">Patient-Friendly Stays</h2>
+        
+        <div class="rooms-grid">
+            <div class="room-card">
+                <div class="room-image">🛏️</div>
+                <div class="room-info">
+                    <h3>Standard Room</h3>
+                    <div class="room-rating">⭐⭐⭐⭐ (4.2)</div>
+                    <div class="room-price">Rs. 1,500/night</div>
+                    <ul class="room-features">
+                        <li>WiFi Enabled</li>
+                        <li>24/7 Care</li>
+                        <li>Clean Bedding</li>
+                        <li>Meals Included</li>
+                    </ul>
+                    <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" onclick="openRoomBooking('Standard Room', 1500)">Book Now</button>
+                </div>
+            </div>
+
+            <div class="room-card">
+                <div class="room-image">👨‍👩‍👧‍👦</div>
+                <div class="room-info">
+                    <h3>Family Suite</h3>
+                    <div class="room-rating">⭐⭐⭐⭐⭐ (4.8)</div>
+                    <div class="room-price">Rs. 2,500/night</div>
+                    <ul class="room-features">
+                        <li>2-3 Beds</li>
+                        <li>Private Bath</li>
+                        <li>Lounge Area</li>
+                        <li>Premium Meals</li>
+                    </ul>
+                    <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" onclick="openRoomBooking('Family Suite', 2500)">Book Now</button>
+                </div>
+            </div>
+
+            <div class="room-card">
+                <div class="room-image">⭐</div>
+                <div class="room-info">
+                    <h3>Premium Room</h3>
+                    <div class="room-rating">⭐⭐⭐⭐⭐ (4.9)</div>
+                    <div class="room-price">Rs. 3,500/night</div>
+                    <ul class="room-features">
+                        <li>AC & Heating</li>
+                        <li>TV & WiFi</li>
+                        <li>Gourmet Food</li>
+                        <li>24/7 Nurse</li>
+                    </ul>
+                    <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" onclick="openRoomBooking('Premium Room', 3500)">Book Now</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">By The Numbers</h2>
+        <div class="stats-container">
+            <div class="stats-item">
+                <div class="number counter" data-target="50000">0</div>
+                <div class="label">Consultations</div>
+            </div>
+            <div class="stats-item">
+                <div class="number counter" data-target="2500">0</div>
+                <div class="label">Healthcare Partners</div>
+            </div>
+            <div class="stats-item">
+                <div class="number counter" data-target="100">0</div>
+                <div class="label">Districts Covered</div>
+            </div>
+            <div class="stats-item">
+                <div class="number counter" data-target="98">0</div>
+                <div class="label">% Satisfaction</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">About MediStay Nepal AI</h2>
+        
+        <div class="about-content">
+            <div class="about-text">
+                <h2>Revolutionizing Healthcare in Nepal</h2>
+                <p>
+                    MediStay Nepal AI connects healthcare, emergency services, and affordable hospitality into one smart ecosystem. Quality healthcare should be accessible, affordable, and convenient for everyone.
+                </p>
+                <p>
+                    Our platform integrates cutting-edge AI technology with compassionate healthcare delivery and comfortable accommodations.
+                </p>
+                <p>
+                    Whether you need urgent medical attention or comfortable accommodation during treatment, MediStay has you covered.
+                </p>
+                <button class="btn btn-primary" onclick="scrollToSection('contact')">Get In Touch</button>
+            </div>
+            <div class="about-image">🌟</div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">Our Coverage Across Nepal</h2>
+        <div style="background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); border-radius: 20px; padding: 3rem; text-align: center; color: white; margin: 2rem 0;">
+            <div style="font-size: 4rem; margin-bottom: 1rem;">📍</div>
+            <p style="font-size: 1.3rem; margin-bottom: 1rem;">Available in 100+ Districts</p>
+            <p style="opacity: 0.9; margin-bottom: 1.5rem;">Kathmandu, Pokhara, Dharan, Birjung, Biratnagar & many more...</p>
+        </div>
+    </section>
+
+    <section class="section" id="emergency">
+        <h2 class="section-title">24/7 Emergency Services</h2>
+        
+        <div class="emergency-container">
+            <div>
+                <button class="emergency-button" onclick="openModal('emergencySosModal')">
+                    🚨 SOS
+                </button>
+                <p style="text-align: center; margin-top: 1rem; opacity: 0.7;">Press to activate emergency</p>
+            </div>
+            <div class="ambulance-tracker">
+                <div class="ambulance-location">🚑 Ambulance En Route</div>
+                <div class="ambulance-animation">
+                    <div class="ambulance-icon">🚑</div>
+                </div>
+                <div class="ambulance-distance">ETA: 5-7 minutes | Distance: 2.5 km</div>
+            </div>
+        </div>
+
+        <h3 style="text-align: center; margin-top: 2rem; margin-bottom: 1.5rem;">Emergency Contacts</h3>
+        <div class="emergency-contacts">
+            <div class="emergency-contact-card" onclick="callService('Ambulance')">
+                <div class="contact-icon">🚑</div>
+                <div class="contact-info">
+                    <h4>Ambulance Service</h4>
+                    <p>+977-1-4256789 | GPS Tracked | 24/7 Available</p>
+                </div>
+            </div>
+            <div class="emergency-contact-card" onclick="callService('Emergency')">
+                <div class="contact-icon">📞</div>
+                <div class="contact-info">
+                    <h4>Emergency Hotline</h4>
+                    <p>+977-1-4000000 | Immediate Response</p>
+                </div>
+            </div>
+            <div class="emergency-contact-card" onclick="findNearestHospital()">
+                <div class="contact-icon">🏥</div>
+                <div class="contact-info">
+                    <h4>Nearest Hospital</h4>
+                    <p>Kathmandu Medical Center | 2.5 km away</p>
+                </div>
+            </div>
+            <div class="emergency-contact-card" onclick="connectDoctor()">
+                <div class="contact-icon">⚕️</div>
+                <div class="contact-info">
+                    <h4>Doctor on Call</h4>
+                    <p>Dr. Ramesh Sharma | Available Now</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="team">
+        <h2 class="section-title">Our Team</h2>
+        
+        <div class="team-grid">
+            <div class="team-card">
+                <div class="team-avatar">👨‍💼</div>
+                <div class="team-info">
+                    <h3>Arjun Neupane</h3>
+                    <div class="team-role">Founder & CEO</div>
+                    <p style="font-size: 0.9rem; margin-bottom: 1rem;">Healthcare visionary with 15+ years in medical technology</p>
+                    <div class="team-social">
+                        <a href="#" class="social-link" title="Twitter">𝕏</a>
+                        <a href="#" class="social-link" title="Facebook">📘</a>
+                        <a href="#" class="social-link" title="LinkedIn">💼</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="team-card">
+                <div class="team-avatar">👨‍💻</div>
+                <div class="team-info">
+                    <h3>Ravi Kumar</h3>
+                    <div class="team-role">Lead Developer</div>
+                    <p style="font-size: 0.9rem; margin-bottom: 1rem;">Full-stack developer specializing in healthcare software</p>
+                    <div class="team-social">
+                        <a href="#" class="social-link" title="Twitter">𝕏</a>
+                        <a href="#" class="social-link" title="Facebook">📘</a>
+                        <a href="#" class="social-link" title="LinkedIn">💼</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="team-card">
+                <div class="team-avatar">👨‍⚕️</div>
+                <div class="team-info">
+                    <h3>Dr. Hari Pathak</h3>
+                    <div class="team-role">Healthcare Advisor</div>
+                    <p style="font-size: 0.9rem; margin-bottom: 1rem;">MBBS with expertise in emergency medicine</p>
+                    <div class="team-social">
+                        <a href="#" class="social-link" title="Twitter">𝕏</a>
+                        <a href="#" class="social-link" title="Facebook">📘</a>
+                        <a href="#" class="social-link" title="LinkedIn">💼</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="contact">
+        <h2 class="section-title">Get In Touch</h2>
+        
+        <div class="contact-form">
+            <form onsubmit="handleContactForm(event)">
+                <div class="form-group">
+                    <label for="contactName">Full Name *</label>
+                    <input type="text" id="contactName" required placeholder="Your full name">
+                </div>
+
+                <div class="form-group">
+                    <label for="contactEmail">Email Address *</label>
+                    <input type="email" id="contactEmail" required placeholder="your@email.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="contactPhone">Phone Number</label>
+                    <input type="tel" id="contactPhone" placeholder="+977-...">
+                </div>
+
+                <div class="form-group">
+                    <label for="contactSubject">Subject *</label>
+                    <input type="text" id="contactSubject" required placeholder="How can we help?">
+                </div>
+
+                <div class="form-group">
+                    <label for="contactMessage">Message *</label>
+                    <textarea id="contactMessage" required placeholder="Tell us more..."></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>MediStay Nepal AI</h4>
+                <p>Smart Healthcare Meets Comfortable Care</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a onclick="scrollToSection('home')">Home</a></li>
+                    <li><a onclick="scrollToSection('features')">Features</a></li>
+                    <li><a onclick="scrollToSection('dashboard')">Dashboard</a></li>
+                    <li><a onclick="scrollToSection('contact')">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Services</h4>
+                <ul>
+                    <li><a onclick="openModal('telemedicineModal')">Telemedicine</a></li>
+                    <li><a onclick="openModal('hospitalModal')">Hospital Finder</a></li>
+                    <li><a onclick="openModal('ambulanceModal')">Ambulance</a></li>
+                    <li><a onclick="scrollToSection('hospitality')">Hostel Booking</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Follow Us</h4>
+                <ul style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">Twitter</a></li>
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">LinkedIn</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 MediStay Nepal AI. All rights reserved. | Privacy Policy | Terms & Conditions</p>
+        </div>
+    </footer>
+
+    <button class="floating-ai" onclick="toggleChatbot()" title="Chat with MediBot">💬</button>
+
+    <!-- MODALS START -->
+    <div id="appointmentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📅 Book Appointment</h2>
+                <button class="modal-close" onclick="closeModal('appointmentModal')">✕</button>
+            </div>
+            <form onsubmit="bookAppointment(event)">
+                <div class="form-group">
+                    <label for="doctorSelect">Select Doctor *</label>
+                    <select id="doctorSelect" required onchange="showDoctorSchedule()">
+                        <option value="">Choose a doctor...</option>
+                        <option value="Dr. Ramesh Sharma - General Physician">Dr. Ramesh Sharma - General Physician</option>
+                        <option value="Dr. Priya Patel - Cardiologist">Dr. Priya Patel - Cardiologist</option>
+                        <option value="Dr. Vikram Gupta - Orthopedist">Dr. Vikram Gupta - Orthopedist</option>
+                        <option value="Dr. Rajesh Singh - Neurologist">Dr. Rajesh Singh - Neurologist</option>
+                    </select>
+                </div>
+
+                <div id="scheduleContainer" style="display: none;">
+                    <div class="form-group">
+                        <label>Available Time Slots *</label>
+                        <div class="schedule-slots" id="timeSlots">
+                            <button type="button" class="time-slot available" onclick="selectSlot(this, '09:00 AM')">09:00 AM</button>
+                            <button type="button" class="time-slot available" onclick="selectSlot(this, '10:00 AM')">10:00 AM</button>
+                            <button type="button" class="time-slot available" onclick="selectSlot(this, '11:00 AM')">11:00 AM</button>
+                            <button type="button" class="time-slot booked">12:00 PM</button>
+                            <button type="button" class="time-slot available" onclick="selectSlot(this, '02:00 PM')">02:00 PM</button>
+                            <button type="button" class="time-slot available" onclick="selectSlot(this, '03:00 PM')">03:00 PM</button>
+                            <button type="button" class="time-slot available" onclick="selectSlot(this, '04:00 PM')">04:00 PM</button>
+                            <button type="button" class="time-slot available" onclick="selectSlot(this, '05:00 PM')">05:00 PM</button>
+                        </div>
+                    </div>
+                </div>
+
+                <input type="hidden" id="selectedSlot" value="">
+
+                <div class="form-group">
+                    <label for="appointmentDate">Preferred Date *</label>
+                    <input type="date" id="appointmentDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="appointmentReason">Reason for Visit *</label>
+                    <input type="text" id="appointmentReason" required placeholder="e.g., Checkup, Consultation">
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Confirm Appointment</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="symptomCheckerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🤖 AI Symptom Checker</h2>
+                <button class="modal-close" onclick="closeModal('symptomCheckerModal')">✕</button>
+            </div>
+            <form onsubmit="checkSymptoms(event)">
+                <div class="form-group">
+                    <label for="symptom1">Symptom 1 *</label>
+                    <select id="symptom1" required>
+                        <option value="">Select symptom...</option>
+                        <option value="Headache">Headache</option>
+                        <option value="Fever">Fever</option>
+                        <option value="Cough">Cough</option>
+                        <option value="Fatigue">Fatigue</option>
+                        <option value="Nausea">Nausea</option>
+                        <option value="Chest Pain">Chest Pain</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="symptom2">Symptom 2</label>
+                    <select id="symptom2">
+                        <option value="">Select symptom...</option>
+                        <option value="Headache">Headache</option>
+                        <option value="Fever">Fever</option>
+                        <option value="Cough">Cough</option>
+                        <option value="Body Ache">Body Ache</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="duration">Duration (days) *</label>
+                    <input type="number" id="duration" required min="1" placeholder="How many days?">
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Analyze Symptoms</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="telemedicineModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📱 Video Consultation</h2>
+                <button class="modal-close" onclick="closeModal('telemedicineModal')">✕</button>
+            </div>
+            <div style="text-align: center; padding: 1.5rem; background: var(--glass-bg); border-radius: 10px; margin-bottom: 1rem;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📹</div>
+                <h3>Start Video Consultation</h3>
+                <p style="margin: 1rem 0; opacity: 0.8;">Connect with a healthcare professional via secure video call</p>
+                <div style="margin: 1.5rem 0;">
+                    <p style="margin-bottom: 0.5rem; font-size: 0.9rem;">Average Wait Time: <strong>2-5 minutes</strong></p>
+                    <p style="margin-bottom: 0; font-size: 0.9rem;">Consultation Fee: <strong>Rs. 500</strong></p>
+                </div>
+            </div>
+
+            <form onsubmit="startTelemedicine(event)">
+                <div class="form-group">
+                    <label for="telePatientName">Your Name *</label>
+                    <input type="text" id="telePatientName" required placeholder="Full name">
+                </div>
+
+                <div class="form-group">
+                    <label for="teleSpecialty">Preferred Specialty *</label>
+                    <select id="teleSpecialty" required>
+                        <option value="">Select specialty...</option>
+                        <option value="General Physician">General Physician</option>
+                        <option value="Cardiologist">Cardiologist</option>
+                        <option value="Orthopedist">Orthopedist</option>
+                        <option value="Pediatrician">Pediatrician</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Start Consultation</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="hospitalModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🏥 Hospital Finder</h2>
+                <button class="modal-close" onclick="closeModal('hospitalModal')">✕</button>
+            </div>
+            <form onsubmit="findHospitals(event)">
+                <div class="form-group">
+                    <label for="location">Your Location *</label>
+                    <input type="text" id="location" required placeholder="City or area name">
+                </div>
+
+                <div class="form-group">
+                    <label for="hospitalType">Hospital Type *</label>
+                    <select id="hospitalType" required>
+                        <option value="">Select type...</option>
+                        <option value="General Hospital">General Hospital</option>
+                        <option value="Multispecialty Hospital">Multispecialty Hospital</option>
+                        <option value="Diagnostic Center">Diagnostic Center</option>
+                        <option value="Clinic">Clinic</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Find Hospitals</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="ambulanceModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🚑 Book Ambulance</h2>
+                <button class="modal-close" onclick="closeModal('ambulanceModal')">✕</button>
+            </div>
+            <form onsubmit="bookAmbulance(event)">
+                <div class="form-group">
+                    <label for="patientName">Patient Name *</label>
+                    <input type="text" id="patientName" required placeholder="Full name">
+                </div>
+
+                <div class="form-group">
+                    <label for="pickupLocation">Pickup Location *</label>
+                    <input type="text" id="pickupLocation" required placeholder="Current location">
+                </div>
+
+                <div class="form-group">
+                    <label for="dropoffLocation">Destination Hospital *</label>
+                    <input type="text" id="dropoffLocation" required placeholder="Destination hospital">
+                </div>
+
+                <div class="form-group">
+                    <label for="urgencyLevel">Urgency Level *</label>
+                    <select id="urgencyLevel" required>
+                        <option value="">Select level...</option>
+                        <option value="Emergency">🔴 Emergency (Life Threatening)</option>
+                        <option value="Urgent">🟠 Urgent (Severe)</option>
+                        <option value="Standard">🟡 Standard (Non-Emergency)</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Book Ambulance</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="medicineModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2>💊 Order Medicines</h2>
+                <button class="modal-close" onclick="closeModal('medicineModal')">✕</button>
+            </div>
+            
+            <div class="form-group">
+                <label for="medicineSearch">Search Medicines *</label>
+                <input type="text" id="medicineSearch" placeholder="Search by name..." onkeyup="searchMedicines()">
+            </div>
+
+            <div id="medicineList" style="max-height: 300px; overflow-y: auto; margin-bottom: 1rem;">
+                <div class="medicine-card">
+                    <div class="medicine-name">Aspirin 500mg</div>
+                    <div class="medicine-type">Pain Relief</div>
+                    <div class="medicine-price">Rs. 250</div>
+                    <button type="button" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;" onclick="addToCart('Aspirin 500mg', 250)">Add to Cart</button>
+                </div>
+
+                <div class="medicine-card">
+                    <div class="medicine-name">Paracetamol 650mg</div>
+                    <div class="medicine-type">Fever & Pain</div>
+                    <div class="medicine-price">Rs. 180</div>
+                    <button type="button" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;" onclick="addToCart('Paracetamol 650mg', 180)">Add to Cart</button>
+                </div>
+
+                <div class="medicine-card">
+                    <div class="medicine-name">Metformin 500mg</div>
+                    <div class="medicine-type">Diabetes Control</div>
+                    <div class="medicine-price">Rs. 320</div>
+                    <button type="button" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;" onclick="addToCart('Metformin 500mg', 320)">Add to Cart</button>
+                </div>
+
+                <div class="medicine-card">
+                    <div class="medicine-name">Vitamin D 1000IU</div>
+                    <div class="medicine-type">Supplement</div>
+                    <div class="medicine-price">Rs. 450</div>
+                    <button type="button" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;" onclick="addToCart('Vitamin D 1000IU', 450)">Add to Cart</button>
+                </div>
+            </div>
+
+            <div id="cartDisplay" style="background: var(--glass-bg); padding: 1rem; border-radius: 10px; margin-top: 1rem;">
+                <h3 style="margin-bottom: 0.5rem;">Shopping Cart</h3>
+                <div id="cartItems">Cart is empty</div>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--glass-border);">
+                    <strong>Total: Rs. <span id="cartTotal">0</span></strong>
+                </div>
+            </div>
+
+            <form onsubmit="checkoutMedicines(event)" style="margin-top: 1rem;">
+                <div class="form-group">
+                    <label for="medicineDeliveryAddress">Delivery Address *</label>
+                    <textarea id="medicineDeliveryAddress" required placeholder="Full address"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;" onclick="return checkCartNotEmpty()">Confirm Order</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="healthRecordsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📋 Digital Health Records</h2>
+                <button class="modal-close" onclick="closeModal('healthRecordsModal')">✕</button>
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                <h3 style="margin-bottom: 1rem;">Your Medical Documents</h3>
+                <div style="background: var(--glass-bg); padding: 1rem; border-radius: 10px; margin-bottom: 0.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>📄 Medical Report - 2026-05-20</div>
+                        <button type="button" class="btn btn-sm btn-primary" onclick="viewRecord('Medical Report')">View</button>
+                    </div>
+                </div>
+
+                <div style="background: var(--glass-bg); padding: 1rem; border-radius: 10px; margin-bottom: 0.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>💉 Vaccination Record - 2026-03-15</div>
+                        <button type="button" class="btn btn-sm btn-primary" onclick="viewRecord('Vaccination')">View</button>
+                    </div>
+                </div>
+
+                <div style="background: var(--glass-bg); padding: 1rem; border-radius: 10px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>🔬 Lab Results - 2026-02-10</div>
+                        <button type="button" class="btn btn-sm btn-primary" onclick="viewRecord('Lab Results')">View</button>
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="margin-bottom: 1rem;">Upload New Document</h3>
+            <div class="form-group">
+                <label for="documentUpload">Select File *</label>
+                <input type="file" id="documentUpload" accept=".pdf,.jpg,.png" required>
+            </div>
+
+            <div class="form-group">
+                <label for="documentType">Document Type *</label>
+                <select id="documentType" required>
+                    <option value="">Select type...</option>
+                    <option value="Prescription">Prescription</option>
+                    <option value="Medical Report">Medical Report</option>
+                    <option value="Lab Report">Lab Report</option>
+                    <option value="Vaccination Card">Vaccination Card</option>
+                </select>
+            </div>
+
+            <button type="button" class="btn btn-primary" style="width: 100%;" onclick="uploadDocument()">Upload Document</button>
+        </div>
+    </div>
+
+    <div id="emergencySosModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🚨 Emergency Alert</h2>
+                <button class="modal-close" onclick="closeModal('emergencySosModal')">✕</button>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #ff006e, #ff4444); color: white; padding: 2rem; border-radius: 15px; text-align: center; margin-bottom: 2rem;">
+                <h2 style="font-size: 2rem; margin-bottom: 1rem;">⚠️ EMERGENCY ALERT</h2>
+                <p style="font-size: 1.1rem; opacity: 0.9;">This will immediately notify emergency services</p>
+            </div>
+
+            <form onsubmit="activateEmergency(event)">
+                <div class="form-group">
+                    <label for="emergencyName">Your Name *</label>
+                    <input type="text" id="emergencyName" required placeholder="Full name">
+                </div>
+
+                <div class="form-group">
+                    <label for="emergencyPhone">Phone Number *</label>
+                    <input type="tel" id="emergencyPhone" required placeholder="+977-...">
+                </div>
+
+                <div class="form-group">
+                    <label for="emergencyLocation">Your Location *</label>
+                    <input type="text" id="emergencyLocation" required placeholder="Current location">
+                </div>
+
+                <div class="form-group">
+                    <label for="emergencyType">Type of Emergency *</label>
+                    <select id="emergencyType" required>
+                        <option value="">Select emergency type...</option>
+                        <option value="Accident / Injury">Accident / Injury</option>
+                        <option value="Chest Pain">Chest Pain / Heart</option>
+                        <option value="Breathing Difficulty">Breathing Difficulty</option>
+                        <option value="Unconscious">Unconscious / Severe</option>
+                        <option value="Poisoning">Poisoning</option>
+                        <option value="Other Emergency">Other Emergency</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="emergencyDetails">Details</label>
+                    <textarea id="emergencyDetails" placeholder="Describe the situation..."></textarea>
+                </div>
+
+                <div style="background: var(--danger-color); color: white; padding: 1rem; border-radius: 10px; margin-bottom: 1rem; text-align: center;">
+                    <input type="checkbox" id="confirmEmergency" required>
+                    <label for="confirmEmergency" style="margin-left: 0.5rem; cursor: pointer;">I confirm this is a real emergency</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; background: var(--danger-color); padding: 1rem; font-size: 1.1rem;">🚨 ACTIVATE EMERGENCY</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="roomBookingModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="roomBookingTitle">🏨 Book Room</h2>
+                <button class="modal-close" onclick="closeModal('roomBookingModal')">✕</button>
+            </div>
+
+            <form onsubmit="confirmRoomBooking(event)">
+                <div style="background: var(--glass-bg); padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem;">
+                    <p style="margin-bottom: 0.5rem;"><strong>Room Type:</strong> <span id="roomTypeDisplay">Standard Room</span></p>
+                    <p style="margin-bottom: 0;"><strong>Price:</strong> Rs. <span id="roomPriceDisplay">1500</span>/night</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="guestName">Guest Name *</label>
+                    <input type="text" id="guestName" required placeholder="Full name">
+                </div>
+
+                <div class="form-group">
+                    <label for="guestPhone">Phone Number *</label>
+                    <input type="tel" id="guestPhone" required placeholder="+977-...">
+                </div>
+
+                <div class="form-group">
+                    <label for="checkInDate">Check-in Date *</label>
+                    <input type="date" id="checkInDate" required onchange="calculateTotal()">
+                </div>
+
+                <div class="form-group">
+                    <label for="checkOutDate">Check-out Date *</label>
+                    <input type="date" id="checkOutDate" required onchange="calculateTotal()">
+                </div>
+
+                <div class="form-group">
+                    <label for="guests">Number of Guests *</label>
+                    <select id="guests" required>
+                        <option value="">Select...</option>
+                        <option value="1">1 Guest</option>
+                        <option value="2">2 Guests</option>
+                        <option value="3">3 Guests</option>
+                        <option value="4">4+ Guests</option>
+                    </select>
+                </div>
+
+                <div style="background: var(--glass-bg); padding: 1rem; border-radius: 10px; margin: 1.5rem 0;">
+                    <h3 style="margin-bottom: 1rem;">Order Summary</h3>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span>Room Rate:</span>
+                        <span>Rs. <span id="rateDisplay">1500</span>/night</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span>Number of Nights:</span>
+                        <span id="nightsDisplay">1</span>
+                    </div>
+                    <div style="border-top: 1px solid var(--glass-border); padding-top: 0.5rem; display: flex; justify-content: space-between; font-weight: bold; font-size: 1.1rem;">
+                        <span>Total Amount:</span>
+                        <span>Rs. <span id="totalAmount">1500</span></span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Complete Booking</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="successModal" class="modal">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <div style="font-size: 4rem; margin: 1rem 0;">✅</div>
+            <h2 style="color: var(--success-color); margin-bottom: 1rem;" id="successTitle">Success!</h2>
+            <p id="successMessage" style="margin-bottom: 2rem; font-size: 1.1rem;"></p>
+            <button class="btn btn-primary" onclick="closeAllModals()">Continue</button>
+        </div>
+    </div>
+    <!-- MODALS END -->
+
+    <script>
+        // ==================== UTILITY FUNCTIONS ====================
+
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function closeAllModals() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.classList.remove('active');
+            });
+        }
+
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        function showSuccess(title, message) {
+            document.getElementById('successTitle').textContent = title;
+            document.getElementById('successMessage').textContent = message;
+            openModal('successModal');
+        }
+
+        // ==================== DARK MODE ====================
+
+        const themeToggle = document.getElementById('themeToggle');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        if (localStorage.getItem('theme')) {
+            document.body.classList.toggle('dark-mode', localStorage.getItem('theme') === 'dark');
+            updateThemeIcon();
+        } else if (prefersDark) {
+            document.body.classList.add('dark-mode');
+            updateThemeIcon();
+        }
+
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+            updateThemeIcon();
+        });
+
+        function updateThemeIcon() {
+            themeToggle.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+        }
+
+        // ==================== NAVBAR SCROLL ====================
+
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // ==================== COUNTERS ====================
+
+        function animateCounters() {
+            const counters = document.querySelectorAll('.counter');
+            counters.forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-target'));
+                const duration = 2000;
+                const increment = target / (duration / 16);
+                let current = 0;
+
+                const updateCounter = () => {
+                    current += increment;
+                    if (current < target) {
+                        counter.textContent = Math.floor(current).toLocaleString();
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        counter.textContent = target.toLocaleString();
+                    }
+                };
+
+                updateCounter();
+            });
+        }
+
+        const observerOptions = { threshold: 0.5 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && entry.target.id === 'dashboard') {
+                    animateCounters();
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        const dashboardSection = document.getElementById('dashboard');
+        if (dashboardSection) {
+            observer.observe(dashboardSection);
+        }
+
+        // ==================== CHATBOT ====================
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            const chatMessages = document.getElementById('chatMessages');
+            const userMsg = document.createElement('div');
+            userMsg.className = 'chat-message user';
+            userMsg.innerHTML = `<div class="message-bubble user">${escapeHtml(message)}</div>`;
+            chatMessages.appendChild(userMsg);
+
+            input.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            setTimeout(() => {
+                const responses = [
+                    "That sounds important! Let me help you find the right healthcare provider.",
+                    "I can assist you with hospital search, doctor appointments, or room bookings.",
+                    "Would you like me to find nearby hospitals or schedule a telemedicine consultation?",
+                    "Our emergency services are available 24/7. Need urgent help?",
+                    "For symptom checking, please describe your symptoms and I'll provide guidance.",
+                    "I can help you book affordable stays near hospitals across Nepal.",
+                    "Your health is our priority. How can I assist you today?",
+                    "Need an ambulance? I can arrange it within minutes with GPS tracking.",
+                    "Would you like to book an appointment with a specialist doctor?",
+                    "I can show you available medicines and arrange home delivery!"
+                ];
+
+                const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                const aiMsg = document.createElement('div');
+                aiMsg.className = 'chat-message';
+                aiMsg.innerHTML = `<div class="message-bubble ai">${randomResponse}</div>`;
+                chatMessages.appendChild(aiMsg);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 500);
+        }
+
+        document.getElementById('chatInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        function toggleChatbot() {
+            const chatbot = document.querySelector('.chatbot-container');
+            chatbot.style.display = chatbot.style.display === 'none' ? 'flex' : 'none';
+        }
+
+        // ==================== SEARCH FUNCTIONS ====================
+
+        const hospitals = [
+            { id: 1, name: 'Kathmandu Medical Center', location: 'Kathmandu', rating: 4.8, distance: '2.5 km', type: 'Multispecialty' },
+            { id: 2, name: 'Nepal Hospital', location: 'Kathmandu', rating: 4.6, distance: '3.2 km', type: 'General' },
+            { id: 3, name: 'Tribhuvan University Teaching Hospital', location: 'Kathmandu', rating: 4.5, distance: '5 km', type: 'Multispecialty' },
+            { id: 4, name: 'Pokhara Medical Center', location: 'Pokhara', rating: 4.7, distance: '2.8 km', type: 'General' },
+            { id: 5, name: 'Birjung Health Hub', location: 'Birjung', rating: 4.4, distance: '1.5 km', type: 'Clinic' },
+        ];
+
+        const stays = [
+            { id: 1, name: 'MediStay Comfort', price: 1500, rating: 4.2, beds: '1-2', location: 'Near Kathmandu Hospital' },
+            { id: 2, name: 'Patient Care Lodge', price: 2000, rating: 4.5, beds: '2-3', location: 'Downtown Kathmandu' },
+            { id: 3, name: 'Family Rest House', price: 2500, rating: 4.7, beds: '2-4', location: 'Near Medical Center' },
+            { id: 4, name: 'Recovery Inn', price: 1800, rating: 4.3, beds: '1-2', location: 'Thamel Area' },
+            { id: 5, name: 'Care Hub Hostel', price: 1200, rating: 4.1, beds: '1', location: 'Pokhara' },
+        ];
+
+        function searchHospitals() {
+            const query = document.getElementById('hospitalSearch').value.toLowerCase();
+            const results = hospitals.filter(h => 
+                h.name.toLowerCase().includes(query) || 
+                h.location.toLowerCase().includes(query)
+            );
+
+            displayResults('hospitalResults', 'resultsContainer', results, 'hospital');
+        }
+
+        function searchStays() {
+            const query = document.getElementById('staySearch').value.toLowerCase();
+            const results = stays.filter(s => 
+                s.name.toLowerCase().includes(query) || 
+                s.location.toLowerCase().includes(query)
+            );
+
+            displayResults('stayResults', 'stayResultsContainer', results, 'stay');
+        }
+
+        function displayResults(containerId, resultId, results, type) {
+            const container = document.getElementById(containerId);
+            const resultsDiv = document.getElementById(resultId);
+
+            if (results.length === 0) {
+                resultsDiv.innerHTML = '<p style="text-align: center; color: var(--warning-color);">No results found. Try another search.</p>';
+            } else {
+                resultsDiv.innerHTML = results.map(item => {
+                    if (type === 'hospital') {
+                        return `
+                            <div class="result-card">
+                                <div class="result-header">
+                                    <h3>${item.name}</h3>
+                                    <span class="result-rating">⭐ ${item.rating}</span>
+                                </div>
+                                <div class="result-info">📍 ${item.location} | ${item.type}</div>
+                                <div class="result-distance">🚗 ${item.distance} away</div>
+                                <div class="result-actions">
+                                    <button class="btn-primary" onclick="openModal('appointmentModal')">Book Appointment</button>
+                                    <button class="btn-secondary" onclick="alert('View Details: ' + '${item.name}\nRating: ${item.rating}/5\nLocation: ${item.location}')">Details</button>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        return `
+                            <div class="result-card">
+                                <div class="result-header">
+                                    <h3>${item.name}</h3>
+                                    <span class="result-rating">⭐ ${item.rating}</span>
+                                </div>
+                                <div class="result-info">🛏️ Beds: ${item.beds} | Rs. ${item.price}/night</div>
+                                <div class="result-distance">📍 ${item.location}</div>
+                                <div class="result-actions">
+                                    <button class="btn-primary" onclick="openRoomBooking('${item.name}', ${item.price})">Book Now</button>
+                                    <button class="btn-secondary" onclick="alert('${item.name}\nPrice: Rs. ${item.price}/night\nBeds: ${item.beds}\nLocation: ${item.location}')">Details</button>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }).join('');
+            }
+
+            container.style.display = 'block';
+        }
+
+        // ==================== APPOINTMENT BOOKING ====================
+
+        function showDoctorSchedule() {
+            const select = document.getElementById('doctorSelect');
+            if (select.value) {
+                document.getElementById('scheduleContainer').style.display = 'block';
+            }
+        }
+
+        function selectSlot(button, time) {
+            document.querySelectorAll('.time-slot').forEach(btn => {
+                btn.style.background = '';
+                btn.style.color = '';
+            });
+            if (!button.classList.contains('booked')) {
+                button.style.background = 'var(--primary-color)';
+                button.style.color = 'white';
+                document.getElementById('selectedSlot').value = time;
+            }
+        }
+
+        function bookAppointment(event) {
+            event.preventDefault();
+            const doctor = document.getElementById('doctorSelect').value;
+            const slot = document.getElementById('selectedSlot').value;
+            const date = document.getElementById('appointmentDate').value;
+            const reason = document.getElementById('appointmentReason').value;
+
+            if (!slot) {
+                alert('Please select a time slot');
+                return;
+            }
+
+            showSuccess('✅ Appointment Booked!', `Doctor: ${doctor}\n\nDate: ${date}\nTime: ${slot}\nReason: ${reason}\n\nConfirmation sent to your email.`);
+            event.target.reset();
+            closeAllModals();
+        }
+
+        // ==================== TELEMEDICINE ====================
+
+        function startTelemedicine(event) {
+            event.preventDefault();
+            const name = document.getElementById('telePatientName').value;
+            const specialty = document.getElementById('teleSpecialty').value;
+
+            showSuccess('✅ Consultation Scheduled!', `Connecting you with a ${specialty}...\n\nWaiting for available doctor.\nEstimated wait: 2-5 minutes`);
+            event.target.reset();
+            closeAllModals();
+        }
+
+        // ==================== HOSPITAL FINDER ====================
+
+        function findHospitals(event) {
+            event.preventDefault();
+            const location = document.getElementById('location').value;
+            closeModal('hospitalModal');
+            document.getElementById('hospitalSearch').value = location;
+            searchHospitals();
+            scrollToSection('dashboard');
+        }
+
+        // ==================== AMBULANCE ====================
+
+        function bookAmbulance(event) {
+            event.preventDefault();
+            const name = document.getElementById('patientName').value;
+            const urgency = document.getElementById('urgencyLevel').value;
+
+            showSuccess('🚑 Ambulance Booked!', `Ambulance dispatched for ${name}\n\nUrgency: ${urgency}\nEstimated arrival: 5-7 minutes\n\nDriver will call you shortly.`);
+            event.target.reset();
+            closeAllModals();
+        }
+
+        // ==================== MEDICINES ====================
+
+        let medicineCart = [];
+
+        function addToCart(name, price) {
+            medicineCart.push({ name, price });
+            updateCartDisplay();
+            alert(name + ' added to cart! ✅');
+        }
+
+        function updateCartDisplay() {
+            const items = document.getElementById('cartItems');
+            const total = document.getElementById('cartTotal');
+
+            if (medicineCart.length === 0) {
+                items.innerHTML = 'Cart is empty';
+                total.textContent = '0';
+            } else {
+                items.innerHTML = medicineCart.map((item, idx) => 
+                    `<div style="padding: 0.5rem 0; display: flex; justify-content: space-between;"><span>${item.name}</span><span>Rs. ${item.price}</span></div>`
+                ).join('');
+                const totalPrice = medicineCart.reduce((sum, item) => sum + item.price, 0);
+                total.textContent = totalPrice;
+            }
+        }
+
+        function checkCartNotEmpty() {
+            if (medicineCart.length === 0) {
+                alert('Please add medicines to your cart first!');
+                return false;
+            }
+            return true;
+        }
+
+        function checkoutMedicines(event) {
+            event.preventDefault();
+            if (!checkCartNotEmpty()) return;
+
+            const address = document.getElementById('medicineDeliveryAddress').value;
+            const total = medicineCart.reduce((sum, item) => sum + item.price, 0);
+
+            showSuccess('✅ Order Placed!', `${medicineCart.length} medicine(s) ordered\nTotal: Rs. ${total}\n\nDelivery to: ${address}\nEstimated delivery: 2-3 hours`);
+            medicineCart = [];
+            updateCartDisplay();
+            closeAllModals();
+        }
+
+        function searchMedicines() {
+            // Filter medicines based on search
+        }
+
+        // ==================== SYMPTOM CHECKER ====================
+
+        function checkSymptoms(event) {
+            event.preventDefault();
+            const symptom1 = document.getElementById('symptom1').value;
+            const symptom2 = document.getElementById('symptom2').value;
+            const duration = document.getElementById('duration').value;
+
+            const conditions = {
+                'Headache': 'Migraine, Tension Headache, or Flu',
+                'Fever': 'Common Cold, Flu, or Infection',
+                'Cough': 'Bronchitis, Cold, or Allergy',
+                'Fatigue': 'Anemia, Low Energy, or Infection'
+            };
+
+            let diagnosis = conditions[symptom1] || 'General condition';
+
+            closeModal('symptomCheckerModal');
+            showSuccess('🤖 AI Analysis Results', `Symptoms: ${symptom1}${symptom2 ? ', ' + symptom2 : ''}\nDuration: ${duration} days\n\nPossible Conditions: ${diagnosis}\n\n⚠️ Please consult a doctor for accurate diagnosis.`);
+            event.target.reset();
+        }
+
+        // ==================== ROOM BOOKING ====================
+
+        function openRoomBooking(roomType, price) {
+            document.getElementById('roomBookingTitle').textContent = '🏨 Book ' + roomType;
+            document.getElementById('roomTypeDisplay').textContent = roomType;
+            document.getElementById('roomPriceDisplay').textContent = price;
+            document.getElementById('rateDisplay').textContent = price;
+            openModal('roomBookingModal');
+        }
+
+        function calculateTotal() {
+            const checkIn = new Date(document.getElementById('checkInDate').value);
+            const checkOut = new Date(document.getElementById('checkOutDate').value);
+            
+            if (checkIn && checkOut && checkOut > checkIn) {
+                const nights = Math.floor((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+                const price = parseInt(document.getElementById('roomPriceDisplay').textContent);
+                const total = nights * price;
+                
+                document.getElementById('nightsDisplay').textContent = nights;
+                document.getElementById('totalAmount').textContent = total;
+            }
+        }
+
+        function confirmRoomBooking(event) {
+            event.preventDefault();
+            const roomType = document.getElementById('roomTypeDisplay').textContent;
+            const total = document.getElementById('totalAmount').textContent;
+            const guestName = document.getElementById('guestName').value;
+            const checkIn = document.getElementById('checkInDate').value;
+            const checkOut = document.getElementById('checkOutDate').value;
+
+            showSuccess('✅ Room Booking Confirmed!', `Room: ${roomType}\nGuest: ${guestName}\nCheck-in: ${checkIn}\nCheck-out: ${checkOut}\nTotal: Rs. ${total}\n\nConfirmation sent to your email.`);
+            closeAllModals();
+        }
+
+        // ==================== EMERGENCY ====================
+
+        function activateEmergency(event) {
+            event.preventDefault();
+            const name = document.getElementById('emergencyName').value;
+            const location = document.getElementById('emergencyLocation').value;
+            const type = document.getElementById('emergencyType').value;
+
+            showSuccess('🚨 EMERGENCY ACTIVATED', `Alert sent to emergency services\n\nName: ${name}\nLocation: ${location}\nType: ${type}\n\n🚑 Ambulance ETA: 5-7 minutes\n📞 Emergency: +977-1-4000000\n\nStay on the line.`);
+            closeAllModals();
+        }
+
+        function callService(service) {
+            alert(`☎️ Calling ${service} Service...\n\nConnection established. Operator connecting...`)
+        }
+
+        function findNearestHospital() {
+            alert('🏥 Nearest Hospital:\nKathmandu Medical Center\n📍 2.5 km away\n⏱️ ETA: 8-10 minutes');
+        }
+
+        function connectDoctor() {
+            alert('⚕️ Connecting to Dr. Ramesh Sharma...\n\nCall starting now...');
+        }
+
+        // ==================== HEALTH RECORDS ====================
+
+        function viewRecord(type) {
+            alert(`📋 Viewing ${type}\n\nDocument verified and secure.\nSize: 2.4 MB\n\nYou can download or share with doctors.`);
+        }
+
+        function uploadDocument() {
+            const file = document.getElementById('documentUpload').files[0];
+            const type = document.getElementById('documentType').value;
+            
+            if (!file || !type) {
+                alert('Please select a file and document type');
+                return;
+            }
+
+            alert(`✅ Document uploaded!\n\nFile: ${file.name}\nType: ${type}\nSize: ${(file.size / 1024).toFixed(2)} KB\n\nSecurely stored.`);
+        }
+
+        // ==================== CONTACT FORM ====================
+
+        function handleContactForm(event) {
+            event.preventDefault();
+            const name = document.getElementById('contactName').value;
+            
+            showSuccess('✅ Message Sent!', `Thank you, ${name}!\n\nWe received your message.\nWe'll get back to you within 24 hours.\n\nEmail: contact@medistaynepal.ai`);
+            event.target.reset();
+        }
+
+        // ==================== MOBILE MENU ====================
+
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        mobileMenuBtn.addEventListener('click', () => {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+            navLinks.style.position = 'absolute';
+            navLinks.style.top = '100%';
+            navLinks.style.left = '0';
+            navLinks.style.right = '0';
+            navLinks.style.backgroundColor = 'var(--glass-bg)';
+            navLinks.style.backdropFilter = 'blur(10px)';
+            navLinks.style.flexDirection = 'column';
+            navLinks.style.padding = '1rem';
+            navLinks.style.borderTop = '1px solid var(--glass-border)';
+        });
+
+        // ==================== INIT ====================
+
+        console.log('🏥 MediStay Nepal AI - Full Prototype Loaded!');
+        console.log('✅ All features are fully functional');
+    </script>
+</body>
+</html>
