@@ -6,11 +6,13 @@ import {
   updateHospital,
   approveHospital,
   searchHospitals,
+  seedHospitals,
 } from '../controllers/hospitalController.js';
 import { protect, authorize } from '../middleware/auth.js';
 
 const router = express.Router();
 
+router.post('/seed', seedHospitals);
 router.get('/', getAllHospitals);
 router.get('/search', searchHospitals);
 router.get('/:id', getHospitalById);

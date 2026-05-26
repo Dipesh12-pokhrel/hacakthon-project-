@@ -59,6 +59,18 @@ const hospitalSchema = new mongoose.Schema(
       type: String,
       default: 'https://via.placeholder.com/300',
     },
+    latitude: {
+      type: Number,
+      default: 27.7172,
+    },
+    longitude: {
+      type: Number,
+      default: 85.3240,
+    },
+    emergencyServices: {
+      type: Boolean,
+      default: true,
+    },
   },
   { timestamps: true }
 );

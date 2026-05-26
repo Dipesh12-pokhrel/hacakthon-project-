@@ -31,6 +31,22 @@
             min-height: 100vh;
         }
 
+        /* LOADING SPINNER */
+        .spinner {
+            border: 4px solid var(--border-light);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         /* LOGIN SCREEN */
         .login-screen {
             display: flex;
@@ -160,9 +176,14 @@
             margin-top: 1rem;
         }
 
-        .btn-primary:hover {
+        .btn-primary:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(0, 168, 204, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
         .alert {
@@ -186,6 +207,12 @@
             background: rgba(255, 0, 110, 0.2);
             color: var(--danger);
             border: 1px solid var(--danger);
+        }
+
+        .alert-warning {
+            background: rgba(255, 214, 10, 0.2);
+            color: var(--warning);
+            border: 1px solid var(--warning);
         }
 
         /* MAIN APPLICATION */
@@ -322,9 +349,10 @@
         /* MAP SECTION */
         #map {
             width: 100%;
-            height: 600px;
+            height: 500px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
         }
 
         .map-controls {
@@ -340,6 +368,7 @@
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.3s ease;
+            background: white;
         }
 
         .map-filter.active {
@@ -348,15 +377,50 @@
             border-color: var(--primary);
         }
 
-        /* PROOF VERIFICATION */
-        .proof-upload {
+        /* CARDS */
+        .card {
             background: white;
-            padding: 2rem;
+            padding: 1.5rem;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
             margin-bottom: 2rem;
         }
 
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            color: #999;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        /* PROOF VERIFICATION */
         .upload-area {
             border: 3px dashed var(--primary);
             border-radius: 12px;
@@ -375,11 +439,6 @@
         .upload-area.dragover {
             background: rgba(0, 168, 204, 0.2);
             border-color: var(--accent);
-        }
-
-        .upload-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
         }
 
         #proofInput {
@@ -406,23 +465,6 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-        }
-
-        .proof-item .remove-btn {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: var(--danger);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
         }
 
         /* CHATBOT */
@@ -477,6 +519,7 @@
             padding: 0.8rem 1rem;
             border-radius: 8px;
             word-wrap: break-word;
+            line-height: 1.4;
         }
 
         .chat-message.bot .message-content {
@@ -518,6 +561,11 @@
             padding: 0.6rem 1rem;
             cursor: pointer;
             font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .chatbot-send:hover {
+            background: var(--primary-dark);
         }
 
         .chatbot-toggle {
@@ -536,6 +584,137 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .chatbot-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        /* TABLES */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .data-table thead {
+            background: var(--bg-light);
+        }
+
+        .data-table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .data-table td {
+            padding: 1rem;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .data-table tbody tr:hover {
+            background: var(--bg-light);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: rgba(6, 214, 160, 0.2);
+            color: var(--success);
+        }
+
+        .badge-pending {
+            background: rgba(255, 214, 10, 0.2);
+            color: var(--warning);
+        }
+
+        .badge-danger {
+            background: rgba(255, 0, 110, 0.2);
+            color: var(--danger);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .theme-toggle {
+            background: var(--bg-light);
+            border: 2px solid var(--border-light);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
         }
 
         /* RESPONSIVE */
@@ -601,148 +780,9 @@
                 right: 0;
             }
 
-            .chatbot-toggle {
-                bottom: 20px;
-                right: 20px;
+            #map {
+                height: 300px;
             }
-        }
-
-        /* CARDS */
-        .card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            margin-bottom: 1.5rem;
-        }
-
-        .card-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--primary);
-        }
-
-        .stat-label {
-            color: #999;
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 2rem;
-            color: var(--primary);
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 3rem;
-            color: #999;
-        }
-
-        .empty-state-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .data-table thead {
-            background: var(--bg-light);
-        }
-
-        .data-table th {
-            padding: 1rem;
-            text-align: left;
-            font-weight: 600;
-            color: var(--primary-dark);
-        }
-
-        .data-table td {
-            padding: 1rem;
-            border-top: 1px solid var(--border-light);
-        }
-
-        .data-table tbody tr:hover {
-            background: var(--bg-light);
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .badge-success {
-            background: rgba(6, 214, 160, 0.2);
-            color: var(--success);
-        }
-
-        .badge-pending {
-            background: rgba(255, 214, 10, 0.2);
-            color: var(--warning);
-        }
-
-        .badge-danger {
-            background: rgba(255, 0, 110, 0.2);
-            color: var(--danger);
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .theme-toggle {
-            background: var(--bg-light);
-            border: 2px solid var(--border-light);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
-        }
-
-        .theme-toggle:hover {
-            background: var(--primary);
-            border-color: var(--primary);
-            color: white;
         }
     </style>
 </head>
@@ -773,8 +813,11 @@
                             <label>Password</label>
                             <input type="password" id="loginPassword" placeholder="Enter your password" required>
                         </div>
-                        <button type="submit" class="btn btn-primary">Sign In</button>
+                        <button type="submit" class="btn btn-primary" id="loginBtn">Sign In</button>
                     </form>
+                    <p style="text-align: center; margin-top: 1rem; color: #999; font-size: 0.9rem;">
+                        Demo: patient@demo.com / demo123
+                    </p>
                 </div>
 
                 <!-- REGISTER FORM -->
@@ -801,13 +844,13 @@
                         </div>
                         <div class="form-group">
                             <label>Password</label>
-                            <input type="password" id="registerPassword" placeholder="Create a password" required>
+                            <input type="password" id="registerPassword" placeholder="Create a password (min 6 chars)" required minlength="6">
                         </div>
                         <div class="form-group">
                             <label>Confirm Password</label>
-                            <input type="password" id="registerConfirm" placeholder="Confirm password" required>
+                            <input type="password" id="registerConfirm" placeholder="Confirm password" required minlength="6">
                         </div>
-                        <button type="submit" class="btn btn-primary">Create Account</button>
+                        <button type="submit" class="btn btn-primary" id="registerBtn">Create Account</button>
                     </form>
                 </div>
             </div>
@@ -834,10 +877,9 @@
             <div class="sidebar">
                 <div class="sidebar-item active" onclick="showSection(event, 'dashboard')">📊 Dashboard</div>
                 <div class="sidebar-item" onclick="showSection(event, 'hospitals')">🏥 Find Hospitals</div>
-                <div class="sidebar-item" onclick="showSection(event, 'hotels')">🏨 Recovery Stays</div>
                 <div class="sidebar-item" onclick="showSection(event, 'appointments')">📅 Appointments</div>
                 <div class="sidebar-item" onclick="showSection(event, 'emergencies')">🚨 Emergency SOS</div>
-                <div class="sidebar-item" onclick="showSection(event, 'proof')">📸 Proof Verification</div>
+                <div class="sidebar-item" onclick="showSection(event, 'proof')">📸 Proof Upload</div>
                 <div class="sidebar-item" onclick="showSection(event, 'profile')">👤 Profile</div>
             </div>
 
@@ -852,12 +894,12 @@
                             <div class="stat-label">Appointments</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-number" id="bookingCount">0</div>
-                            <div class="stat-label">Bookings</div>
-                        </div>
-                        <div class="stat-card">
                             <div class="stat-number" id="emergencyCount">0</div>
                             <div class="stat-label">Emergencies</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="proofCount">0</div>
+                            <div class="stat-label">Proof Documents</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-number" id="serverStatus">✅</div>
@@ -868,8 +910,8 @@
                         <div class="card-title">📋 Quick Actions</div>
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
                             <button class="btn btn-primary" onclick="showSection(null, 'appointments')" style="margin: 0;">📅 Book Appointment</button>
-                            <button class="btn btn-primary" onclick="showSection(null, 'hotels')" style="margin: 0;">🏨 Book Recovery Stay</button>
                             <button class="btn btn-primary" onclick="showSection(null, 'hospitals')" style="margin: 0;">🏥 Find Hospital</button>
+                            <button class="btn btn-primary" onclick="showSection(null, 'proof')" style="margin: 0;">📸 Upload Proof</button>
                             <button class="btn btn-primary" onclick="handleEmergency()" style="margin: 0; background: var(--danger);">🚨 Emergency SOS</button>
                         </div>
                     </div>
@@ -879,11 +921,15 @@
                 <div id="hospitals" class="section">
                     <div class="section-title">🏥 Find Hospitals Near You</div>
                     <div class="map-controls">
-                        <button class="map-filter active" onclick="filterMap(event, 'all')">All Hospitals</button>
-                        <button class="map-filter" onclick="filterMap(event, 'urgent')">Emergency Only</button>
-                        <button class="map-filter" onclick="filterMap(event, 'rated')">Top Rated</button>
+                        <button class="map-filter active" onclick="filterHospitals(event, 'all')">All Hospitals</button>
+                        <button class="map-filter" onclick="filterHospitals(event, 'emergency')">Emergency Only</button>
+                        <button class="map-filter" onclick="filterHospitals(event, 'toprated')">Top Rated</button>
                     </div>
-                    <div id="map"></div>
+                    <div id="map" style="display:none;"></div>
+                    <div id="mapLoading" style="text-align: center; padding: 2rem;">
+                        <div class="spinner" style="margin: 0 auto;"></div>
+                        <p style="margin-top: 1rem; color: var(--primary);">Loading hospitals...</p>
+                    </div>
                     <div class="card" style="margin-top: 1.5rem;">
                         <div class="card-title">Hospital List</div>
                         <table class="data-table">
@@ -892,21 +938,16 @@
                                     <th>Hospital Name</th>
                                     <th>Location</th>
                                     <th>Rating</th>
+                                    <th>Emergency</th>
                                     <th>Beds</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody id="hospitalList">
-                                <tr><td colspan="5" class="empty-state">Loading hospitals...</td></tr>
+                                <tr><td colspan="6" class="empty-state">Loading hospitals...</td></tr>
                             </tbody>
                         </table>
                     </div>
-                </div>
-
-                <!-- HOTELS SECTION -->
-                <div id="hotels" class="section">
-                    <div class="section-title">🏨 Recovery Stay Facilities</div>
-                    <div id="hotelsList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;"></div>
                 </div>
 
                 <!-- APPOINTMENTS SECTION -->
@@ -918,10 +959,12 @@
                             <div class="form-grid">
                                 <div class="form-group">
                                     <label>Hospital</label>
-                                    <input type="text" id="appointmentHospital" placeholder="Select hospital" required>
+                                    <select id="appointmentHospital" required>
+                                        <option value="">Select a hospital...</option>
+                                    </select>
                                 </div>
                                 <div class="form-group">
-                                    <label>Doctor</label>
+                                    <label>Doctor/Specialty</label>
                                     <input type="text" id="appointmentDoctor" placeholder="Doctor name" required>
                                 </div>
                                 <div class="form-group">
@@ -933,7 +976,11 @@
                                     <input type="time" id="appointmentTime" required>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary">Book Appointment</button>
+                            <div class="form-group">
+                                <label>Reason for Visit</label>
+                                <input type="text" id="appointmentReason" placeholder="Describe your concern" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary" id="appointmentBtn">Book Appointment</button>
                         </form>
                     </div>
                     <div class="card">
@@ -943,12 +990,13 @@
                                 <tr>
                                     <th>Hospital</th>
                                     <th>Doctor</th>
-                                    <th>Date</th>
+                                    <th>Date & Time</th>
                                     <th>Status</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody id="appointmentsList">
-                                <tr><td colspan="4" class="empty-state">No appointments yet</td></tr>
+                                <tr><td colspan="5" class="empty-state">No appointments booked yet</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -961,7 +1009,8 @@
                         <div style="text-align: center; padding: 2rem;">
                             <div style="font-size: 3rem; margin-bottom: 1rem;">🚑</div>
                             <h2>EMERGENCY SOS</h2>
-                            <button onclick="handleEmergency()" class="btn" style="background: white; color: var(--danger); margin-top: 1rem; width: 100%; max-width: 300px; font-weight: bold;">CALL AMBULANCE</button>
+                            <p style="margin: 1rem 0; opacity: 0.9;">Immediate medical assistance will be dispatched to your location</p>
+                            <button onclick="handleEmergency()" class="btn" style="background: white; color: var(--danger); margin-top: 1rem; width: 100%; max-width: 300px; font-weight: bold; font-size: 1rem;">CALL AMBULANCE NOW</button>
                         </div>
                     </div>
                     <div class="card">
@@ -972,11 +1021,10 @@
                                     <th>Date/Time</th>
                                     <th>Location</th>
                                     <th>Status</th>
-                                    <th>Ambulance</th>
                                 </tr>
                             </thead>
                             <tbody id="emergenciesList">
-                                <tr><td colspan="4" class="empty-state">No emergency calls yet</td></tr>
+                                <tr><td colspan="3" class="empty-state">No emergency calls yet</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -985,11 +1033,11 @@
                 <!-- PROOF VERIFICATION SECTION -->
                 <div id="proof" class="section">
                     <div class="section-title">📸 Proof Verification</div>
-                    <div class="proof-upload">
+                    <div class="card">
                         <div class="card-title">Upload Incident Proof (Photo/Video)</div>
                         <p style="color: #999; margin-bottom: 1rem;">Upload photos or videos to verify incidents for claims</p>
-                        <div class="upload-area" id="uploadArea" onclick="document.getElementById('proofInput').click()">
-                            <div class="upload-icon">📁</div>
+                        <div class="upload-area" id="uploadArea" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" onclick="document.getElementById('proofInput').click()">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">📁</div>
                             <p style="margin-bottom: 0.5rem;"><strong>Click to upload or drag & drop</strong></p>
                             <p style="color: #999; font-size: 0.9rem;">Supported: JPG, PNG, MP4, MOV (Max 100MB)</p>
                         </div>
@@ -1025,19 +1073,20 @@
                                     <input type="tel" id="profilePhone" placeholder="Phone number">
                                 </div>
                                 <div class="form-group">
-                                    <label>City</label>
-                                    <input type="text" id="profileCity" placeholder="City">
-                                </div>
-                                <div class="form-group">
                                     <label>Address</label>
                                     <input type="text" id="profileAddress" placeholder="Address">
                                 </div>
-                                <div class="form-group">
-                                    <label>Role</label>
-                                    <input type="text" id="profileRole" placeholder="Role" disabled>
-                                </div>
                             </div>
-                            <button type="submit" class="btn btn-primary">Update Profile</button>
+                            <div class="form-group">
+                                <label>Bio</label>
+                                <textarea id="profileBio" placeholder="Tell us about yourself" style="width: 100%; padding: 0.8rem; border: 2px solid var(--primary); border-radius: 8px; font-family: inherit; min-height: 100px;" maxlength="500"></textarea>
+                                <small style="color: #999;">Character count: <span id="bioCount">0</span>/500</small>
+                            </div>
+                            <div class="form-group">
+                                <label>Role</label>
+                                <input type="text" id="profileRole" placeholder="Role" disabled>
+                            </div>
+                            <button type="submit" class="btn btn-primary" id="profileBtn">Update Profile</button>
                         </form>
                     </div>
                 </div>
@@ -1060,8 +1109,14 @@
     </div>
 
     <script>
-        // API CLIENT
+        // ============== API CLIENT ==============
         const API_BASE_URL = 'http://localhost:5000/api';
+        let currentUser = null;
+        let hospitals = [];
+        let appointments = [];
+        let proofFiles = [];
+        let map = null;
+        let darkMode = localStorage.getItem('darkMode') === 'true';
 
         class APIClient {
             constructor() {
@@ -1102,6 +1157,11 @@
                         location.reload();
                     }
 
+                    if (!response.ok) {
+                        const error = await response.json();
+                        throw new Error(error.message || `HTTP Error: ${response.status}`);
+                    }
+
                     return await response.json();
                 } catch (error) {
                     console.error('API Error:', error);
@@ -1127,17 +1187,21 @@
                 });
             }
 
+            async patch(endpoint, data) {
+                return this.makeRequest(endpoint, {
+                    method: 'PATCH',
+                    body: JSON.stringify(data),
+                });
+            }
+
             async delete(endpoint) {
                 return this.makeRequest(endpoint, { method: 'DELETE' });
             }
         }
 
         const api = new APIClient();
-        let proofFiles = [];
-        let map = null;
-        let appointments = [];
 
-        // TAB SWITCHING
+        // ============== AUTHENTICATION ==============
         function switchTab(tab) {
             document.querySelectorAll('.form-tabs button').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.form-content').forEach(form => form.classList.remove('active'));
@@ -1145,15 +1209,17 @@
             document.getElementById(tab + 'Form').classList.add('active');
         }
 
-        // LOGIN HANDLER
         async function handleLogin(event) {
             event.preventDefault();
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
+            const loginBtn = document.getElementById('loginBtn');
             const alertDiv = document.getElementById('loginAlert');
 
             try {
-                alertDiv.classList.remove('show');
+                loginBtn.disabled = true;
+                loginBtn.innerHTML = '<div class="spinner"></div>';
+
                 const response = await api.post('/auth/login', { email, password });
 
                 if (response.success && response.token) {
@@ -1165,10 +1231,12 @@
                 }
             } catch (error) {
                 showAlert(alertDiv, 'Login error: ' + error.message, 'error');
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = 'Sign In';
             }
         }
 
-        // REGISTER HANDLER
         async function handleRegister(event) {
             event.preventDefault();
             const name = document.getElementById('registerName').value;
@@ -1176,6 +1244,7 @@
             const role = document.getElementById('registerRole').value;
             const password = document.getElementById('registerPassword').value;
             const confirmPassword = document.getElementById('registerConfirm').value;
+            const registerBtn = document.getElementById('registerBtn');
             const alertDiv = document.getElementById('registerAlert');
 
             try {
@@ -1184,22 +1253,32 @@
                     return;
                 }
 
+                if (password.length < 6) {
+                    showAlert(alertDiv, 'Password must be at least 6 characters!', 'error');
+                    return;
+                }
+
+                registerBtn.disabled = true;
+                registerBtn.innerHTML = '<div class="spinner"></div>';
+
                 const response = await api.post('/auth/register', { name, email, role, password });
 
                 if (response.success && response.token) {
                     api.setToken(response.token);
                     localStorage.setItem('user', JSON.stringify(response.user));
-                    showAlert(alertDiv, 'Account created successfully!', 'success');
-                    setTimeout(() => showApp(response.user), 500);
+                    showAlert(alertDiv, 'Account created successfully! Logging in...', 'success');
+                    setTimeout(() => showApp(response.user), 1000);
                 } else {
                     showAlert(alertDiv, response.message || 'Registration failed', 'error');
                 }
             } catch (error) {
                 showAlert(alertDiv, 'Registration error: ' + error.message, 'error');
+            } finally {
+                registerBtn.disabled = false;
+                registerBtn.innerHTML = 'Create Account';
             }
         }
 
-        // LOGOUT HANDLER - FIXED!
         function handleLogout() {
             if (confirm('Are you sure you want to logout?')) {
                 try {
@@ -1207,9 +1286,10 @@
                     document.getElementById('appContainer').classList.remove('active');
                     document.getElementById('loginScreen').classList.remove('hidden');
                     document.getElementById('chatbotContainer').style.display = 'none';
+                    document.getElementById('chatbotToggle').style.display = 'flex';
                     document.getElementById('loginEmail').value = '';
                     document.getElementById('loginPassword').value = '';
-                    document.getElementById('loginAlert').classList.remove('show');
+                    document.querySelectorAll('.alert').forEach(a => a.classList.remove('show'));
                     window.scrollTo(0, 0);
                 } catch(e) {
                     console.error('Logout error:', e);
@@ -1217,99 +1297,291 @@
             }
         }
 
-        // SHOW APP
         function showApp(user) {
+            currentUser = user;
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('appContainer').classList.add('active');
             document.getElementById('userName').textContent = user.name;
             document.getElementById('userRole').textContent = user.role.replace('_', ' ').toUpperCase();
+            
+            // Load initial data
             loadDashboard();
+            loadHospitals();
             initChatbot();
-            setTimeout(initMap, 500);
+            loadAppointments();
         }
 
-        // ALERT FUNCTION
         function showAlert(element, message, type) {
             element.textContent = message;
             element.className = `alert show alert-${type}`;
             setTimeout(() => element.classList.remove('show'), 5000);
         }
 
-        // SECTION SWITCHING
+        // ============== NAVIGATION ==============
         function showSection(evt, sectionId) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
             document.getElementById(sectionId).classList.add('active');
             if (evt && evt.target) {
-                evt.target.closest('.sidebar-item').classList.add('active');
+                evt.target.closest('.sidebar-item')?.classList.add('active');
             }
 
             if (sectionId === 'hospitals') {
-                setTimeout(initMap, 100);
+                setTimeout(() => {
+                    if (map === null) initMap();
+                }, 100);
             }
         }
 
-        // LOAD DASHBOARD
+        // ============== DASHBOARD ==============
         function loadDashboard() {
             document.getElementById('appointmentCount').textContent = appointments.length;
-            document.getElementById('bookingCount').textContent = '0';
             document.getElementById('emergencyCount').textContent = '0';
+            document.getElementById('proofCount').textContent = proofFiles.length;
             document.getElementById('serverStatus').textContent = '✅';
         }
 
-        // INIT MAP
+        // ============== HOSPITALS & MAP ==============
+        async function loadHospitals() {
+            try {
+                const response = await api.get('/hospitals');
+                if (response.success && response.data && response.data.length > 0) {
+                    hospitals = response.data;
+                } else {
+                    // If no hospitals, seed them
+                    await seedHospitals();
+                }
+                displayHospitals();
+                populateHospitalSelect();
+            } catch (error) {
+                console.error('Error loading hospitals:', error);
+            }
+        }
+
+        async function seedHospitals() {
+            try {
+                const response = await api.post('/hospitals/seed', {});
+                if (response.success) {
+                    hospitals = response.data;
+                }
+            } catch (error) {
+                console.error('Error seeding hospitals:', error);
+            }
+        }
+
+        function displayHospitals() {
+            const tbody = document.getElementById('hospitalList');
+            const mapLoading = document.getElementById('mapLoading');
+            
+            tbody.innerHTML = '';
+            hospitals.forEach(h => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${h.name}</strong></td>
+                        <td>${h.location}</td>
+                        <td>⭐ ${h.rating || 4.5}</td>
+                        <td>${h.emergencyServices ? '✅ Yes' : '❌ No'}</td>
+                        <td>${h.bedsAvailable}/${h.totalBeds}</td>
+                        <td><button class="btn btn-primary" onclick="selectHospital('${h._id}', '${h.name}')" style="padding: 0.4rem 0.8rem; font-size: 0.9rem;">Select</button></td>
+                    </tr>
+                `;
+            });
+            
+            if (mapLoading) mapLoading.style.display = 'none';
+        }
+
+        function populateHospitalSelect() {
+            const select = document.getElementById('appointmentHospital');
+            select.innerHTML = '<option value="">Select a hospital...</option>';
+            hospitals.forEach(h => {
+                select.innerHTML += `<option value="${h._id}">${h.name}</option>`;
+            });
+        }
+
+        function selectHospital(hospitalId, hospitalName) {
+            showSection(null, 'appointments');
+            document.getElementById('appointmentHospital').value = hospitalId;
+        }
+
+        function filterHospitals(evt, type) {
+            document.querySelectorAll('.map-filter').forEach(b => b.classList.remove('active'));
+            evt.target.classList.add('active');
+            
+            if (map === null) {
+                initMap();
+            }
+        }
+
         function initMap() {
             const mapElement = document.getElementById('map');
             if (!mapElement || map) return;
 
+            mapElement.style.display = 'block';
             const kathmandu = { lat: 27.7172, lng: 85.3240 };
             map = new google.maps.Map(mapElement, {
                 zoom: 13,
                 center: kathmandu,
             });
 
-            // Sample hospitals
-            const hospitals = [
-                { name: 'Kathmandu Medical Center', lat: 27.7172, lng: 85.3240, rating: 4.8 },
-                { name: 'Nepal Police Hospital', lat: 27.7200, lng: 85.3150, rating: 4.5 },
-                { name: 'Tribhuvan University Teaching Hospital', lat: 27.7100, lng: 85.3300, rating: 4.6 },
-            ];
-
             hospitals.forEach(hospital => {
                 new google.maps.Marker({
-                    position: { lat: hospital.lat, lng: hospital.lng },
+                    position: { lat: hospital.latitude || 27.7172, lng: hospital.longitude || 85.3240 },
                     map: map,
                     title: hospital.name,
-                    icon: 'http://maps.google.com/mapfiles/ms/icons/hospital.png'
+                    icon: 'https://maps.google.com/mapfiles/ms/icons/hospital.png'
                 });
             });
+        }
 
-            // Load hospital list
-            const tbody = document.getElementById('hospitalList');
+        // ============== APPOINTMENTS ==============
+        async function loadAppointments() {
+            try {
+                const response = await api.get('/appointments/my-appointments');
+                if (response.success && response.data) {
+                    appointments = response.data;
+                    updateAppointmentsList();
+                    loadDashboard();
+                }
+            } catch (error) {
+                console.error('Error loading appointments:', error);
+            }
+        }
+
+        async function handleBookAppointment(event) {
+            event.preventDefault();
+            const hospitalId = document.getElementById('appointmentHospital').value;
+            const doctorName = document.getElementById('appointmentDoctor').value;
+            const appointmentDate = document.getElementById('appointmentDate').value;
+            const appointmentTime = document.getElementById('appointmentTime').value;
+            const reason = document.getElementById('appointmentReason').value;
+            const btn = document.getElementById('appointmentBtn');
+
+            try {
+                btn.disabled = true;
+                btn.innerHTML = '<div class="spinner"></div>';
+
+                const response = await api.post('/appointments', {
+                    hospitalId,
+                    doctorName,
+                    specialty: 'General',
+                    appointmentDate: new Date(appointmentDate),
+                    timeSlot: appointmentTime,
+                    reason,
+                });
+
+                if (response.success) {
+                    showAlert(document.querySelector('#appointments .alert') || createAlert(), '✅ Appointment booked successfully!', 'success');
+                    event.target.reset();
+                    await loadAppointments();
+                } else {
+                    showAlert(document.querySelector('#appointments .alert') || createAlert(), response.message, 'error');
+                }
+            } catch (error) {
+                showAlert(document.querySelector('#appointments .alert') || createAlert(), error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Book Appointment';
+            }
+        }
+
+        function updateAppointmentsList() {
+            const tbody = document.getElementById('appointmentsList');
             tbody.innerHTML = '';
-            hospitals.forEach(h => {
-                tbody.innerHTML += `
+            if (appointments.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No appointments booked yet</td></tr>';
+            } else {
+                appointments.forEach(a => {
+                    const hospitalName = hospitals.find(h => h._id === a.hospitalId)?.name || 'Unknown Hospital';
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${hospitalName}</td>
+                            <td>${a.doctorName}</td>
+                            <td>${new Date(a.appointmentDate).toLocaleDateString()} ${a.timeSlot}</td>
+                            <td><span class="badge badge-pending">${a.status || 'Pending'}</span></td>
+                            <td><button class="btn btn-primary" onclick="cancelAppointment('${a._id}')" style="padding: 0.4rem 0.8rem; font-size: 0.9rem; background: var(--danger);">Cancel</button></td>
+                        </tr>
+                    `;
+                });
+            }
+        }
+
+        async function cancelAppointment(appointmentId) {
+            if (confirm('Cancel this appointment?')) {
+                try {
+                    const response = await api.patch(`/appointments/${appointmentId}/cancel`, {});
+                    if (response.success) {
+                        await loadAppointments();
+                    }
+                } catch (error) {
+                    alert('Error canceling appointment: ' + error.message);
+                }
+            }
+        }
+
+        // ============== EMERGENCY ==============
+        function handleEmergency() {
+            if (confirm('🚑 Call emergency ambulance? Location will be shared automatically.')) {
+                const timestamp = new Date().toLocaleString();
+                const emergencyData = {
+                    timestamp,
+                    location: 'Kathmandu, Nepal (27.7172, 85.3240)',
+                    status: 'Ambulance Dispatched'
+                };
+                
+                alert('🚑 EMERGENCY ACTIVATED!\n\nAmbulance has been dispatched to your location.\n\nETA: 5-10 minutes\n\nStay calm and follow emergency responder instructions.');
+                
+                const tbody = document.getElementById('emergenciesList');
+                let html = tbody.innerHTML;
+                if (html.includes('No emergency calls yet')) {
+                    html = '';
+                }
+                tbody.innerHTML = html + `
                     <tr>
-                        <td>${h.name}</td>
-                        <td>Kathmandu, Nepal</td>
-                        <td>⭐ ${h.rating}</td>
-                        <td>45</td>
-                        <td><button class="btn btn-primary" style="padding: 0.5rem 1rem;">Book</button></td>
+                        <td>${timestamp}</td>
+                        <td>${emergencyData.location}</td>
+                        <td><span class="badge badge-success">Dispatched</span></td>
                     </tr>
                 `;
-            });
+                loadDashboard();
+            }
         }
 
-        function filterMap(evt, type) {
-            document.querySelectorAll('.map-filter').forEach(b => b.classList.remove('active'));
-            evt.target.classList.add('active');
+        // ============== PROOF UPLOAD ==============
+        function handleDragOver(event) {
+            event.preventDefault();
+            document.getElementById('uploadArea').classList.add('dragover');
         }
 
-        // PROOF UPLOAD
+        function handleDragLeave(event) {
+            event.preventDefault();
+            document.getElementById('uploadArea').classList.remove('dragover');
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+            document.getElementById('uploadArea').classList.remove('dragover');
+            const files = event.dataTransfer.files;
+            handleProofUpload({ target: { files } });
+        }
+
         function handleProofUpload(event) {
             const files = Array.from(event.target.files);
-            proofFiles.push(...files);
+            
+            // Validate file types and sizes
+            files.forEach(file => {
+                if (!['image/jpeg', 'image/png', 'video/mp4', 'video/quicktime'].includes(file.type)) {
+                    alert(`Invalid file type: ${file.type}. Supported: JPG, PNG, MP4, MOV`);
+                    return;
+                }
+                if (file.size > 100 * 1024 * 1024) {
+                    alert(`File too large: ${file.name}. Max 100MB`);
+                    return;
+                }
+                proofFiles.push(file);
+            });
+
             displayProofPreview();
+            loadDashboard();
         }
 
         function displayProofPreview() {
@@ -1320,10 +1592,10 @@
                 div.className = 'proof-item';
                 if (file.type.startsWith('image')) {
                     const url = URL.createObjectURL(file);
-                    div.innerHTML = `<img src="${url}"><button class="remove-btn" onclick="removeProof(${index})">×</button>`;
+                    div.innerHTML = `<img src="${url}" alt="proof"><button type="button" onclick="removeProof(${index})" style="position: absolute; top: 5px; right: 5px; background: var(--danger); color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; display: flex; align-items: center; justify-content: center;">×</button>`;
                 } else {
                     const url = URL.createObjectURL(file);
-                    div.innerHTML = `<video><source src="${url}"></video><button class="remove-btn" onclick="removeProof(${index})">×</button>`;
+                    div.innerHTML = `<video style="width: 100%; height: 100%; object-fit: cover;"><source src="${url}"></video><button type="button" onclick="removeProof(${index})" style="position: absolute; top: 5px; right: 5px; background: var(--danger); color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; display: flex; align-items: center; justify-content: center;">×</button>`;
                 }
                 preview.appendChild(div);
             });
@@ -1332,65 +1604,58 @@
         function removeProof(index) {
             proofFiles.splice(index, 1);
             displayProofPreview();
-        }
-
-        // APPOINTMENT BOOKING
-        function handleBookAppointment(event) {
-            event.preventDefault();
-            const data = {
-                hospital: document.getElementById('appointmentHospital').value,
-                doctor: document.getElementById('appointmentDoctor').value,
-                date: document.getElementById('appointmentDate').value,
-                time: document.getElementById('appointmentTime').value,
-            };
-            appointments.push(data);
-            alert('✅ Appointment booked successfully!');
-            event.target.reset();
-            updateAppointmentsList();
             loadDashboard();
         }
 
-        function updateAppointmentsList() {
-            const tbody = document.getElementById('appointmentsList');
-            tbody.innerHTML = '';
-            if (appointments.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No appointments yet</td></tr>';
-            } else {
-                appointments.forEach(a => {
-                    tbody.innerHTML += `
-                        <tr>
-                            <td>${a.hospital}</td>
-                            <td>${a.doctor}</td>
-                            <td>${a.date}</td>
-                            <td><span class="badge badge-pending">Pending</span></td>
-                        </tr>
-                    `;
-                });
+        // ============== PROFILE ==============
+        async function handleProfileUpdate(event) {
+            event.preventDefault();
+            const name = document.getElementById('profileName').value;
+            const phone = document.getElementById('profilePhone').value;
+            const address = document.getElementById('profileAddress').value;
+            const bio = document.getElementById('profileBio').value;
+            const btn = document.getElementById('profileBtn');
+
+            try {
+                btn.disabled = true;
+                btn.innerHTML = '<div class="spinner"></div>';
+
+                // Update locally since we don't have backend update endpoint
+                currentUser.name = name;
+                currentUser.phone = phone;
+                currentUser.address = address;
+                localStorage.setItem('user', JSON.stringify(currentUser));
+                document.getElementById('userName').textContent = name;
+
+                showAlert(document.querySelector('#profile .alert') || createAlert(), '✅ Profile updated successfully!', 'success');
+            } catch (error) {
+                showAlert(document.querySelector('#profile .alert') || createAlert(), error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Update Profile';
             }
         }
 
-        // EMERGENCY
-        function handleEmergency() {
-            alert('🚑 Emergency ambulance has been called! Location shared: 27.7172, 85.3240\n\nAmbulance ETA: 5 minutes');
-            showSection(null, 'emergencies');
-        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const bioInput = document.getElementById('profileBio');
+            if (bioInput) {
+                bioInput.addEventListener('input', (e) => {
+                    document.getElementById('bioCount').textContent = e.target.value.length;
+                });
+            }
+        });
 
-        // PROFILE UPDATE
-        function handleProfileUpdate(event) {
-            event.preventDefault();
-            const user = JSON.parse(localStorage.getItem('user'));
-            user.name = document.getElementById('profileName').value;
-            user.phone = document.getElementById('profilePhone').value;
-            user.city = document.getElementById('profileCity').value;
-            user.address = document.getElementById('profileAddress').value;
-            localStorage.setItem('user', JSON.stringify(user));
-            alert('✅ Profile updated successfully!');
-        }
-
-        // CHATBOT
+        // ============== CHATBOT ==============
         function toggleChatbot() {
             const container = document.getElementById('chatbotContainer');
-            container.style.display = container.style.display === 'none' ? 'flex' : 'none';
+            const toggle = document.getElementById('chatbotToggle');
+            if (container.style.display === 'none') {
+                container.style.display = 'flex';
+                toggle.style.display = 'none';
+            } else {
+                container.style.display = 'none';
+                toggle.style.display = 'flex';
+            }
         }
 
         function initChatbot() {
@@ -1398,6 +1663,14 @@
             messagesDiv.innerHTML = `
                 <div class="chat-message bot">
                     <div class="message-content">👋 Hello! I'm your MediStay Assistant. How can I help you today?</div>
+                </div>
+                <div class="chat-message bot">
+                    <div class="message-content">Some things I can help with:
+                    • Find nearby hospitals
+                    • Book appointments
+                    • Emergency SOS
+                    • Upload proof documents
+                    • Update your profile</div>
                 </div>
             `;
         }
@@ -1408,19 +1681,11 @@
             if (!message) return;
 
             const messagesDiv = document.getElementById('chatbotMessages');
-            messagesDiv.innerHTML += `<div class="chat-message user"><div class="message-content">${message}</div></div>`;
+            messagesDiv.innerHTML += `<div class="chat-message user"><div class="message-content">${escapeHtml(message)}</div></div>`;
 
-            // Bot response
-            const responses = [
-                '📅 You can book appointments with hospitals in the "Appointments" section.',
-                '🏨 To book a recovery stay, go to "Recovery Stays" section.',
-                '🚨 In case of emergency, click the red SOS button - ambulance will be dispatched immediately.',
-                '📸 Upload proof documents (photos/videos) in the "Proof Verification" section for claims.',
-                '👤 You can view and update your profile information anytime.',
-                '🏥 Find nearby hospitals with live map tracking in the "Find Hospitals" section.',
-                '💬 I am available 24/7 to help guide you through the platform.',
-            ];
-            const response = responses[Math.floor(Math.random() * responses.length)];
+            // Context-aware bot responses
+            const userMsg = message.toLowerCase();
+            let response = getBotResponse(userMsg);
 
             setTimeout(() => {
                 messagesDiv.innerHTML += `<div class="chat-message bot"><div class="message-content">${response}</div></div>`;
@@ -1431,17 +1696,68 @@
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
 
-        // THEME TOGGLE
-        function toggleTheme() {
-            document.body.style.filter = document.body.style.filter === 'invert(1)' ? 'invert(0)' : 'invert(1)';
+        function getBotResponse(message) {
+            // Context-aware responses
+            if (message.includes('hospital') || message.includes('find')) {
+                return '🏥 You can find hospitals near you in the "Find Hospitals" section. We show location, ratings, available beds, and emergency services.';
+            }
+            if (message.includes('appointment') || message.includes('book')) {
+                return '📅 To book an appointment, go to the "Appointments" section, select a hospital, choose a doctor, and pick your preferred date and time.';
+            }
+            if (message.includes('emergency') || message.includes('sos') || message.includes('ambulance')) {
+                return '🚨 In case of emergency, click the red "Emergency SOS" button to call an ambulance immediately to your location.';
+            }
+            if (message.includes('proof') || message.includes('upload') || message.includes('document') || message.includes('photo') || message.includes('video')) {
+                return '📸 Upload proof of incidents (photos/videos) in the "Proof Upload" section to support your claims.';
+            }
+            if (message.includes('profile') || message.includes('update')) {
+                return '👤 You can view and update your personal information anytime in the "Profile" section.';
+            }
+            if (message.includes('help') || message.includes('support')) {
+                return '💬 I can help with hospitals, appointments, emergencies, proof uploads, and profile updates. What do you need?';
+            }
+            if (message.includes('hi') || message.includes('hello') || message.includes('hey')) {
+                return '👋 Hello! Welcome to MediStay Nepal AI. How can I assist you today?';
+            }
+            
+            // Default response
+            return '🤖 I understand you\'re asking about: ' + message.substring(0, 30) + '...\n\nI can help with:\n• Finding hospitals\n• Booking appointments\n• Emergency services\n• Uploading proof documents\n\nWhat would you like to do?';
         }
 
-        // CHECK IF LOGGED IN
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // ============== THEME ==============
+        function toggleTheme() {
+            darkMode = !darkMode;
+            localStorage.setItem('darkMode', darkMode);
+            if (darkMode) {
+                document.body.style.filter = 'invert(1)';
+            } else {
+                document.body.style.filter = 'invert(0)';
+            }
+        }
+
+        function createAlert() {
+            const alert = document.createElement('div');
+            alert.className = 'alert';
+            document.querySelector('.card')?.prepend(alert);
+            return alert;
+        }
+
+        // ============== INITIALIZATION ==============
         window.addEventListener('load', () => {
             const user = localStorage.getItem('user');
             const token = localStorage.getItem('token');
             if (user && token) {
+                api.setToken(token);
                 showApp(JSON.parse(user));
+            }
+            if (darkMode) {
+                document.body.style.filter = 'invert(1)';
             }
         });
     </script>
